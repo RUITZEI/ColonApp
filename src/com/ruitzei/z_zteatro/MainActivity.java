@@ -1,11 +1,24 @@
 package com.ruitzei.z_zteatro;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import com.ruitzei.utilitarios.NoticiaOle;
+import com.ruitzei.utilitarios.RssParser;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,12 +26,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
 
+	private List<NoticiaOle> noticias;
+	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,6 +52,9 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
 		shouldDisplayHomeUp();
+		
+		//new DownloadXmlTask().execute(OLE);
+		//descargarNoticias();
 	}
 
 	@Override
@@ -40,6 +63,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		// Aca estoy inflando el Menu y ocultando el Item.
 		getMenuInflater().inflate(R.menu.main, menu);
 		menu.findItem(R.id.action_settings).setVisible(false);
+		menu.findItem(R.id.refresh_icon).setVisible(false);
 		return true;
 	}
 
@@ -121,8 +145,26 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	    getSupportFragmentManager().popBackStack();
 	    return true;
 	}
+		
 	
-
-
-
+	/*
+	 * Para que los otros fragments puedan acceder a las noticias.
+	 */
+	public List<NoticiaOle> getNoticias(){
+		
+		return this.noticias;		
+	}
+	
+	
+	//Si devuelve true es porque hubo un problema en la descarga.
+	public boolean existenNoticias(){
+		return !(this.noticias == null);
+	}
+	
+	
+	//Setear las noticias por si las consegui desde la agenda misma o de donde fuera.
+	public void setNoticias (List<NoticiaOle> noticias){
+		this.noticias = noticias;
+	}
+	
 }

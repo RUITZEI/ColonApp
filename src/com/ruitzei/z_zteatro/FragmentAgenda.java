@@ -13,6 +13,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -20,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdaptadorAgenda;
 import com.ruitzei.utilitarios.NoticiaOle;
@@ -31,8 +34,9 @@ public class FragmentAgenda extends ListFragment {
 	//Necesito la referencia a la vista para poder llamar a los botones que tenga.
 	private View view;
 	
-	private List<NoticiaOle> noticias;
+	//private List<NoticiaOle> noticias;
 	private AdaptadorAgenda adapterNoticias;
+	private List<NoticiaOle> noticias;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
@@ -47,30 +51,39 @@ public class FragmentAgenda extends ListFragment {
 		
 		btnCargar.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				new DownloadXmlTask().execute(OLE);
 	            System.out.println("HILO PRINCIPAL");
 	            System.out.println("HILO PRINCIPAL");
 	            System.out.println("HILO PRINCIPAL");
-	            System.out.println("HILO PRINCIPAL");	            	
+	            System.out.println("HILO PRINCIPAL");  
 			}
 		});
+		
+        if ( ((MainActivity)getActivity()).existenNoticias() ){
+        	mostrarLista();
+        }else{
+        	new DescargarYMostrar().execute(OLE);
+        }
+		
+		setHasOptionsMenu(true);
 		
 		return view;
 	}
 
 
 	public void mostrarLista(){
-        ListView lista = (ListView)this.view.findViewById(android.R.id.list);
-        adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(), noticias);
-        lista.setAdapter(adapterNoticias);
-		//Toast.makeText(this, "Muestro", Toast.LENGTH_LONG).show();
-        
-    	agregarListenerLista(); 
+        	noticias = ((MainActivity)getActivity()).getNoticias();
+			ListView lista = (ListView)this.view.findViewById(android.R.id.list);
+	        adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),this.noticias);
+	        //adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(), noticias);
+	        lista.setAdapter(adapterNoticias);
+			//Toast.makeText(this, "Muestro", Toast.LENGTH_LONG).show();
+	        
+	    	agregarListenerLista();
 	}
 
 	
     // Descarga del archivo en un hilo separado para no tildar la interfaz de usuario.
-    private class DownloadXmlTask extends AsyncTask<String, Void, String> {
+    private class DescargarYMostrar extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -87,11 +100,18 @@ public class FragmentAgenda extends ListFragment {
 
         @Override
         protected void onPostExecute(String result) {
-        	System.out.println(noticias.get(0).getDescripcion());
-        	System.out.println(noticias.size());
-        	System.out.println(noticias.get(0).getFecha());
-        	
-        	mostrarLista();        	
+        	if (result.equalsIgnoreCase("success")){
+        		Toast.makeText(getActivity(), "Descarga todo piola", Toast.LENGTH_LONG).show();
+        		System.out.println(noticias.get(0).getDescripcion());
+            	System.out.println(noticias.size());
+            	System.out.println(noticias.get(0).getFecha());
+            	
+            	((MainActivity)getActivity()).setNoticias(noticias);
+            	
+            	mostrarLista();
+        	} else {
+        		Toast.makeText(getActivity(),"Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar", Toast.LENGTH_LONG).show();
+        	}
         }
     }
     
@@ -114,25 +134,15 @@ public class FragmentAgenda extends ListFragment {
             }
         }
         
-        return "";
+        return "Success";
     }
     
-    public void agregarListenerLista() {
-        ListView lista = (ListView)this.view.findViewById(android.R.id.list);
 
-        lista.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				System.out.println("Se clickeo el elemento Nº "+ position );				
-			}
-		});	
-	}
 
 	private InputStream downloadUrl(String urlString) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
+        conn.setReadTimeout(10000 /* milliseconds*/ );
         conn.setConnectTimeout(15000 /* milliseconds */);
         conn.setRequestMethod("GET");
         conn.setDoInput(true);
@@ -144,4 +154,34 @@ public class FragmentAgenda extends ListFragment {
         System.out.println("se bajo el asunto");
         return stream;
     }
+	
+    public void agregarListenerLista() {
+        ListView lista = (ListView)this.view.findViewById(android.R.id.list);
+
+        lista.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				System.out.println("Se clickeo el elemento Nº "+ position );				
+			}
+		});	
+	}
+    
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		//Toast.makeText(getActivity(), "ASD", Toast.LENGTH_LONG).show();
+		menu.findItem(R.id.refresh_icon).setVisible(true);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	   // handle item selection
+	   switch (item.getItemId()) {
+	      case R.id.refresh_icon:
+	    	  Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
+	    	  new DescargarYMostrar().execute(OLE);
+	      default:
+	         return super.onOptionsItemSelected(item);
+	   }
+	}
 }

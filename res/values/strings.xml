@@ -4,5 +4,7 @@
     <string name="app_name">Z-ZTEATRO</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="refresh_icon">Refreshs</string>
+    
 
 </resources>
