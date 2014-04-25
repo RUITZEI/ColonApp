@@ -154,17 +154,36 @@ public class FragmentAgenda extends ListFragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		//Toast.makeText(getActivity(), "ASD", Toast.LENGTH_LONG).show();
 		menu.findItem(R.id.refresh_icon).setVisible(true);
+		menu.setGroupVisible(R.id.filtro, true);
+		menu.setGroupCheckable(R.id.filtro, true, true);
 	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	   // handle item selection
-	   switch (item.getItemId()) {
-	      case R.id.refresh_icon:
-	    	  Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
-	    	  new DescargarYMostrar().execute(OLE);
+		switch (item.getItemId()) {
+			case R.id.refresh_icon:
+				Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
+				new DescargarYMostrar().execute(OLE);
+			case R.id.todos_icon:
+				checkearItem(item);
+				Toast.makeText(getActivity(), "Mostrar todos",Toast.LENGTH_SHORT).show();
+			case R.id.ballet_icon:
+				checkearItem(item);
+				Toast.makeText(getActivity(), "Mostrar Ballet",Toast.LENGTH_SHORT).show();
+			case R.id.opera_icon:
+				checkearItem(item);
+				Toast.makeText(getActivity(), "Mostrar Opera",Toast.LENGTH_SHORT).show();
+			case R.id.shows_icon:
+				checkearItem(item);
+				Toast.makeText(getActivity(), "Mostrar Shows",Toast.LENGTH_SHORT).show();
 	      default:
 	         return super.onOptionsItemSelected(item);
 	   }
+	}
+
+	//Solo 1 item puede ser checkeado al mismo tiempo.
+	private void checkearItem(MenuItem item) {
+        if (item.isChecked()) item.setChecked(false);
+        else item.setChecked(true);		
 	}
 }

@@ -1,37 +1,23 @@
 package com.ruitzei.z_zteatro;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.ParseException;
+import java.lang.reflect.Field;
 import java.util.List;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import com.ruitzei.utilitarios.NoticiaOle;
-import com.ruitzei.utilitarios.RssParser;
-
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.ActivityCompat;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.os.AsyncTask;
-import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.os.Build;
+
+import com.ruitzei.utilitarios.NoticiaOle;
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
 
@@ -50,12 +36,16 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 					  //.add(R.id.container, new FragmentAgenda()).commit();
 		}
 		
+		//Para poder usar el iconito de overFlow en todos los dispositivos.
+		quitarBotonOpciones();
+		
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
 		shouldDisplayHomeUp();
 		
 		//new DownloadXmlTask().execute(OLE);
 		//descargarNoticias();
 	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -64,7 +54,9 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		getMenuInflater().inflate(R.menu.main, menu);
 		menu.findItem(R.id.action_settings).setVisible(false);
 		menu.findItem(R.id.refresh_icon).setVisible(false);
+		menu.setGroupVisible(R.id.filtro, false);
 		return true;
+		//return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -165,6 +157,19 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	//Setear las noticias por si las consegui desde la agenda misma o de donde fuera.
 	public void setNoticias (List<NoticiaOle> noticias){
 		this.noticias = noticias;
+	}
+	
+	private void quitarBotonOpciones() {
+	    try {
+	        ViewConfiguration config = ViewConfiguration.get(this);
+	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+	        if(menuKeyField != null) {
+	            menuKeyField.setAccessible(true);
+	            menuKeyField.setBoolean(config, false);
+	        }
+	    } catch (Exception ex) {
+	        // Ignore
+	    }		
 	}
 	
 }

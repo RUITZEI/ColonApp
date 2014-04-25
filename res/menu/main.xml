@@ -14,5 +14,26 @@
         android:title="@string/refresh_icon"
         app:showAsAction="ifRoom"/>
     
+	<group  
+	    android:id="@+id/filtro"
+	    android:checkableBehavior="single">
+		<item 
+	        android:title="Todos"
+	        android:id="@+id/todos_icon"
+	        android:checked="true"
+	        app:showAsAction="never"/>
+		<item 
+		    android:id="@+id/shows_icon"
+	        android:title="Shows"
+	        app:showAsAction="never"/>
+	    <item 
+	        android:id="@+id/opera_icon"
+	        android:title="Opera"
+	        app:showAsAction="never"/>
+	    <item 
+	        android:id="@+id/ballet_icon"
+	        android:title="Ballet"
+	        app:showAsAction="never"/>
+	</group>	 
 
 </menu>
