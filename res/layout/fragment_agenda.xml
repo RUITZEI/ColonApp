@@ -4,15 +4,7 @@
     android:layout_height="match_parent" 
     android:orientation="vertical"
     android:background="#0f0f0f"   
-    >
-    
-    <Button 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Cargar XML"
-        android:id="@+id/btnCargar">
-    </Button>
-    
+    > 
     <ListView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +12,4 @@
 		android:id="@android:id/list"
 		android:cacheColorHint="#0b0c0d">        
     </ListView>
-
-
-
 </LinearLayout>

@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -17,26 +17,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdaptadorAgenda;
-import com.ruitzei.utilitarios.NoticiaOle;
 import com.ruitzei.utilitarios.RssParser;
 
 public class FragmentAgenda extends ListFragment {
-	private Button btnCargar;
+	//private Button btnCargar;
+	//btnCargar = (Button)view.findViewById(R.id.btnCargar);
+
 	
 	//Necesito la referencia a la vista para poder llamar a los botones que tenga.
 	private View view;
 	
-	//private List<NoticiaOle> noticias;
 	private AdaptadorAgenda adapterNoticias;
-	private List<NoticiaOle> noticias;
+	private MainActivity actividadPrincipal;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
@@ -46,19 +44,9 @@ public class FragmentAgenda extends ListFragment {
 			Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_agenda, container, false);
 		this.view=view;
+		this.actividadPrincipal = ((MainActivity)getActivity());
 		
-		btnCargar = (Button)view.findViewById(R.id.btnCargar);
-		
-		btnCargar.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-	            System.out.println("HILO PRINCIPAL");
-	            System.out.println("HILO PRINCIPAL");
-	            System.out.println("HILO PRINCIPAL");
-	            System.out.println("HILO PRINCIPAL");  
-			}
-		});
-		
-        if ( ((MainActivity)getActivity()).existenNoticias() ){
+		if (actividadPrincipal.existenNoticias()){
         	mostrarLista();
         }else{
         	new DescargarYMostrar().execute(OLE);
@@ -70,21 +58,25 @@ public class FragmentAgenda extends ListFragment {
 	}
 
 
-	public void mostrarLista(){
-        	noticias = ((MainActivity)getActivity()).getNoticias();
-			ListView lista = (ListView)this.view.findViewById(android.R.id.list);
-	        adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),this.noticias);
-	        //adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(), noticias);
-	        lista.setAdapter(adapterNoticias);
-			//Toast.makeText(this, "Muestro", Toast.LENGTH_LONG).show();
-	        
-	    	agregarListenerLista();
+	public void mostrarLista(){		
+		ListView lista = (ListView)this.view.findViewById(android.R.id.list);
+		adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());
+	    lista.setAdapter(adapterNoticias);
+	    
+	    agregarListenerLista();
 	}
 
 	
     // Descarga del archivo en un hilo separado para no tildar la interfaz de usuario.
     private class DescargarYMostrar extends AsyncTask<String, Void, String> {
-
+    	private ProgressDialog Asycdialog = new ProgressDialog(getActivity());
+    	
+    	@Override
+    	protected void onPreExecute(){            
+            Asycdialog.setMessage("Cargando......");
+            Asycdialog.show();
+    	}    	
+    	
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -102,42 +94,33 @@ public class FragmentAgenda extends ListFragment {
         protected void onPostExecute(String result) {
         	if (result.equalsIgnoreCase("success")){
         		Toast.makeText(getActivity(), "Descarga todo piola", Toast.LENGTH_LONG).show();
-        		System.out.println(noticias.get(0).getDescripcion());
-            	System.out.println(noticias.size());
-            	System.out.println(noticias.get(0).getFecha());
-            	
-            	((MainActivity)getActivity()).setNoticias(noticias);
+            	Asycdialog.dismiss();
             	
             	mostrarLista();
         	} else {
+        		Asycdialog.dismiss();
         		Toast.makeText(getActivity(),"Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar", Toast.LENGTH_LONG).show();
-        	}
+        	}       	
         }
     }
     
     private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException, ParseException {
         InputStream stream = null;
-        //RssClarinParser clarinParser = new RssClarinParser();
         RssParser oleParser = new RssParser();
-        noticias = null;
         try {
             stream = downloadUrl(urlString);
             System.out.println("antes del parse");
             
             //Le paso al PARSER el archivo XML para que haga lo suyo.
-            noticias = oleParser.parse(stream);
-            System.out.println("despues del parse");
-            
+            actividadPrincipal.setNoticias(oleParser.parse(stream));
+            System.out.println("despues del parse");            
         } finally {
             if (stream != null) {
                 stream.close();                
             }
-        }
-        
+        }        
         return "Success";
     }
-    
-
 
 	private InputStream downloadUrl(String urlString) throws IOException {
         URL url = new URL(urlString);
