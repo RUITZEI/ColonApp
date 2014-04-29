@@ -56,13 +56,15 @@ public class FragmentAgenda extends ListFragment {
 		
 		return view;
 	}
-
+	
 
 	public void mostrarLista(){		
 		ListView lista = (ListView)this.view.findViewById(android.R.id.list);
 		adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());
-	    lista.setAdapter(adapterNoticias);
-	    
+		
+	    lista.setAdapter(adapterNoticias);	    
+	   
+	    adapterNoticias.getFilter().filter("torito");	     
 	    agregarListenerLista();
 	}
 
@@ -73,7 +75,7 @@ public class FragmentAgenda extends ListFragment {
     	
     	@Override
     	protected void onPreExecute(){            
-            Asycdialog.setMessage("Cargando......");
+            Asycdialog.setMessage("Cargando ...");
             Asycdialog.show();
     	}    	
     	
@@ -109,8 +111,7 @@ public class FragmentAgenda extends ListFragment {
         RssParser oleParser = new RssParser();
         try {
             stream = downloadUrl(urlString);
-            System.out.println("antes del parse");
-            
+            System.out.println("antes del parse");            
             //Le paso al PARSER el archivo XML para que haga lo suyo.
             actividadPrincipal.setNoticias(oleParser.parse(stream));
             System.out.println("despues del parse");            
@@ -154,8 +155,6 @@ public class FragmentAgenda extends ListFragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		//Toast.makeText(getActivity(), "ASD", Toast.LENGTH_LONG).show();
 		menu.findItem(R.id.refresh_icon).setVisible(true);
-		menu.setGroupVisible(R.id.filtro, true);
-		menu.setGroupCheckable(R.id.filtro, true, true);
 	}
 	
 	@Override
@@ -164,26 +163,8 @@ public class FragmentAgenda extends ListFragment {
 			case R.id.refresh_icon:
 				Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
 				new DescargarYMostrar().execute(OLE);
-			case R.id.todos_icon:
-				checkearItem(item);
-				Toast.makeText(getActivity(), "Mostrar todos",Toast.LENGTH_SHORT).show();
-			case R.id.ballet_icon:
-				checkearItem(item);
-				Toast.makeText(getActivity(), "Mostrar Ballet",Toast.LENGTH_SHORT).show();
-			case R.id.opera_icon:
-				checkearItem(item);
-				Toast.makeText(getActivity(), "Mostrar Opera",Toast.LENGTH_SHORT).show();
-			case R.id.shows_icon:
-				checkearItem(item);
-				Toast.makeText(getActivity(), "Mostrar Shows",Toast.LENGTH_SHORT).show();
 	      default:
 	         return super.onOptionsItemSelected(item);
 	   }
-	}
-
-	//Solo 1 item puede ser checkeado al mismo tiempo.
-	private void checkearItem(MenuItem item) {
-        if (item.isChecked()) item.setChecked(false);
-        else item.setChecked(true);		
 	}
 }

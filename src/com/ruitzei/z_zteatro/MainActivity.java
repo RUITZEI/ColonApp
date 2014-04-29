@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		getMenuInflater().inflate(R.menu.main, menu);
 		menu.findItem(R.id.action_settings).setVisible(false);
 		menu.findItem(R.id.refresh_icon).setVisible(false);
-		menu.setGroupVisible(R.id.filtro, false);
+		//menu.setGroupVisible(R.id.filtro, false);
 		return true;
 		//return super.onCreateOptionsMenu(menu);
 	}
