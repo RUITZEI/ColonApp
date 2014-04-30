@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pressed_color">#ff0012</color>
+    <color name="pressed_color">#8D0D0C</color>
     <color name="selected_color">#666666</color>
-    <color name="activated_color">#ff0000</color>
+    <color name="activated_color">#8D0D0C</color>
     <color name="default_color">#ffffff</color>
     <color name="negro">#0f0f0f</color>
-    <color name="gris">#333333</color>
+    <color name="gris">#1A1A1A </color>
+    <color name="rojo_texto">#A60606 </color>
 </resources>
 

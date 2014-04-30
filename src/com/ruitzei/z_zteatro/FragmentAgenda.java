@@ -12,6 +12,8 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBar.OnNavigationListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,13 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdaptadorAgenda;
 import com.ruitzei.utilitarios.RssParser;
 
-public class FragmentAgenda extends ListFragment {
+public class FragmentAgenda extends ListFragment implements OnNavigationListener {
 	//private Button btnCargar;
 	//btnCargar = (Button)view.findViewById(R.id.btnCargar);
 
@@ -38,6 +41,7 @@ public class FragmentAgenda extends ListFragment {
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
+	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,18 +57,34 @@ public class FragmentAgenda extends ListFragment {
         }
 		
 		setHasOptionsMenu(true);
+		cargarSpinner();
 		
 		return view;
 	}
 	
 
+	/**
+	 * Carga los String del archivo Values\Items_spinner.xml para agregarlos en el menu de la parte superior. 
+	 */	
+	private void cargarSpinner() {
+		ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(actividadPrincipal.getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
+		//ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(getActivity(), R.array.items_spinner, R.layout.item_spinner);
+		
+		((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+		((MainActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(adapterSpiiner, this);
+		//adapterSpiiner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);		
+	}
+
+
 	public void mostrarLista(){		
 		ListView lista = (ListView)this.view.findViewById(android.R.id.list);
-		adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());
-		
-	    lista.setAdapter(adapterNoticias);	    
+		adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
+	    lista.setAdapter(adapterNoticias);
+	    
+	    //Me aseguro que siempre empieze mostrando todo sin filtrar.
+	    //actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(0);
 	   
-	    adapterNoticias.getFilter().filter("torito");	     
 	    agregarListenerLista();
 	}
 
@@ -95,14 +115,13 @@ public class FragmentAgenda extends ListFragment {
         @Override
         protected void onPostExecute(String result) {
         	if (result.equalsIgnoreCase("success")){
-        		Toast.makeText(getActivity(), "Descarga todo piola", Toast.LENGTH_LONG).show();
-            	Asycdialog.dismiss();
-            	
+        		Toast.makeText(getActivity(), "Descarga correcta", Toast.LENGTH_LONG).show();
             	mostrarLista();
         	} else {
-        		Asycdialog.dismiss();
+        		
         		Toast.makeText(getActivity(),"Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar", Toast.LENGTH_LONG).show();
-        	}       	
+        	}   
+        	Asycdialog.dismiss();        	
         }
     }
     
@@ -166,5 +185,20 @@ public class FragmentAgenda extends ListFragment {
 	      default:
 	         return super.onOptionsItemSelected(item);
 	   }
+	}
+
+
+	@Override
+	public boolean onNavigationItemSelected(int arg0, long arg1) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override 
+	public void onDestroy(){
+		super.onDestroy();
+		((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		
 	}
 }

@@ -24,8 +24,9 @@
         android:paddingLeft="5dp">
        		<TextView 
                 android:id="@+id/textView3"
-                android:textSize="10sp"
-                android:textColor="#f5f5f5"
+                android:textSize="12sp"
+               	android:textStyle="bold"
+                android:textColor="@color/rojo_texto"
                 android:text="25 de Mayo del 2003"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

@@ -3,6 +3,10 @@ package com.ruitzei.z_zteatro;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -37,10 +41,12 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		}
 		
 		//Para poder usar el iconito de overFlow en todos los dispositivos.
-		quitarBotonOpciones();
+		//quitarBotonOpciones();
 		
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
 		shouldDisplayHomeUp();
+		
+		//getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.RED));
 		
 		//new DownloadXmlTask().execute(OLE);
 		//descargarNoticias();

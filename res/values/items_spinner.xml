@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name = "items_spinner"> 
+    	<item>VER TODOS</item>
+    	<item>OPERA</item>
+    	<item>BALLET</item>
+    	<item>CONCIERTOS</item>
+    	<item>ABONO ESTELAR</item>
+    	<item>INTERPRETES ARGENTINOS</item>
+    	<item>COLON CONTEMPORANEO</item>   
+	</string-array>
+    
+</resources>
