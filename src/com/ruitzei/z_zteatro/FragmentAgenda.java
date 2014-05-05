@@ -9,6 +9,8 @@ import java.text.ParseException;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -50,14 +52,16 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		this.view=view;
 		this.actividadPrincipal = ((MainActivity)getActivity());
 		
+		
 		if (actividadPrincipal.existenNoticias()){
+			cargarSpinner();
         	mostrarLista();
         }else{
         	new DescargarYMostrar().execute(OLE);
         }
 		
 		setHasOptionsMenu(true);
-		cargarSpinner();
+		//cargarSpinner();
 		
 		return view;
 	}
@@ -67,13 +71,21 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	 * Carga los String del archivo Values\Items_spinner.xml para agregarlos en el menu de la parte superior. 
 	 */	
 	private void cargarSpinner() {
-		ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(actividadPrincipal.getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
+		/**
+		//ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(actividadPrincipal.getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
 		//ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(getActivity(), R.array.items_spinner, R.layout.item_spinner);
 		
 		((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 		((MainActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(adapterSpiiner, this);
 		//adapterSpiiner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);		
+		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);*/
+		
+		ArrayAdapter<CharSequence> adapterSpinner = ((MainActivity)getActivity()).getAdapterSpinner();
+		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(false);
+		actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
+		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
+		actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(2);
 	}
 
 
@@ -91,25 +103,39 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	
     // Descarga del archivo en un hilo separado para no tildar la interfaz de usuario.
     private class DescargarYMostrar extends AsyncTask<String, Void, String> {
-    	private ProgressDialog Asycdialog = new ProgressDialog(getActivity());
+    	private ProgressDialog asycdialog = new ProgressDialog(getActivity());
+    	
+    	public DescargarYMostrar(){
+    		asycdialog = new ProgressDialog(getActivity());
+    		asycdialog.setMessage("Cargando ...");
+    		asycdialog.setCancelable(true);
+    		asycdialog.setOnCancelListener(new OnCancelListener() {				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					cancel(true);					
+				}
+			});
+    	}
     	
     	@Override
-    	protected void onPreExecute(){            
-            Asycdialog.setMessage("Cargando ...");
-            Asycdialog.show();
+    	protected void onPreExecute(){  
+            asycdialog.show();
     	}    	
     	
         @Override
         protected String doInBackground(String... urls) {
-            try {
-                return loadXmlFromNetwork(urls[0]);
-            } catch (IOException e) {
-                return "Error de conexion";
-            } catch (XmlPullParserException e) {
-                return "Error del link!";
-            } catch (ParseException e) {
-				return "Error del parse Date";
-			}
+        	while (!isCancelled()){
+	        	try {
+	                return loadXmlFromNetwork(urls[0]);
+	            } catch (IOException e) {
+	                return "Error de conexion";
+	            } catch (XmlPullParserException e) {
+	                return "Error del link!";
+	            } catch (ParseException e) {
+					return "Error del parse Date";
+				}
+        	}
+        	return "asd";
         }
 
         @Override
@@ -117,11 +143,12 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         	if (result.equalsIgnoreCase("success")){
         		Toast.makeText(getActivity(), "Descarga correcta", Toast.LENGTH_LONG).show();
             	mostrarLista();
+            	cargarSpinner();
         	} else {
         		
         		Toast.makeText(getActivity(),"Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar", Toast.LENGTH_LONG).show();
         	}   
-        	Asycdialog.dismiss();        	
+        	asycdialog.dismiss();        	
         }
     }
     
@@ -189,16 +216,25 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 
 
 	@Override
-	public boolean onNavigationItemSelected(int arg0, long arg1) {
-		// TODO Auto-generated method stub
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		switch (itemPosition) {
+		case 2:
+			Toast.makeText(getActivity(), "Ballet Selecetd", Toast.LENGTH_SHORT).show();
+			break;
+		case 3:
+			adapterNoticias.getFilter().filter("No");
+			break;
+
+		default:
+			break;
+		}
 		return false;
 	}
 	
 	@Override 
 	public void onDestroy(){
 		super.onDestroy();
-		((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		
+		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
+		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 	}
 }

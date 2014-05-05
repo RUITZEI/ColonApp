@@ -3,10 +3,6 @@ package com.ruitzei.z_zteatro;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import com.ruitzei.utilitarios.NoticiaOle;
@@ -27,6 +24,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 
 	private List<NoticiaOle> noticias;
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
+	private ArrayAdapter<CharSequence> adapterSpinner;
 
 	
 	@Override
@@ -43,13 +41,11 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		//Para poder usar el iconito de overFlow en todos los dispositivos.
 		//quitarBotonOpciones();
 		
+		adapterSpinner = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
+		
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
 		shouldDisplayHomeUp();
 		
-		//getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.RED));
-		
-		//new DownloadXmlTask().execute(OLE);
-		//descargarNoticias();
 	}
 
 
@@ -86,7 +82,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
+			View rootView = inflater.inflate(R.layout.fragment_main_nuevo, container,
 					false);
 			
 			/*
@@ -131,10 +127,17 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	    shouldDisplayHomeUp();		
 	}
 	
+	
+	/**
+	 * Cada vez que se invoca un fragment, la BackStackEntry count se incrementa
+	 * en 1. Si la backStack esta en 0 significa que no hay ningun Fragment encima
+	 * abierto y entonces no deberia mostrar la AcionBar.
+	 */
 	public void shouldDisplayHomeUp(){
 		//Enable Up button only  if there are entries in the back stack
 		boolean canback = getSupportFragmentManager().getBackStackEntryCount()>0;
 		getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
+		deberiaMostrarActionBar(canback);
 	}
 	
 	@Override
@@ -145,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	}
 		
 	
-	/*
+	/**
 	 * Para que los otros fragments puedan acceder a las noticias.
 	 */
 	public List<NoticiaOle> getNoticias(){
@@ -178,4 +181,15 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	    }		
 	}
 	
+	public ArrayAdapter<CharSequence> getAdapterSpinner(){
+		return this.adapterSpinner;
+	}
+	
+	public void deberiaMostrarActionBar(boolean deberia){
+		if (deberia){
+			getSupportActionBar().show();
+		} else{
+			getSupportActionBar().hide();
+		}
+	}	
 }
