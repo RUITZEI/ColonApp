@@ -8,6 +8,7 @@ import java.text.ParseException;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.R.anim;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -52,6 +53,13 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		this.view=view;
 		this.actividadPrincipal = ((MainActivity)getActivity());
 		
+		//actividadPrincipal.getSupportActionBar().setIcon(android.R.color.transparent);
+		//actividadPrincipal.getSupportActionBar().setDisplayUseLogoEnabled(false);
+		//actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(false);
+		//actividadPrincipal.getSupportActionBar().setCustomView(R.layout.actionbar_custom);
+		//actividadPrincipal.getSupportActionBar().setDisplayShowCustomEnabled(true);
+		
+		actividadPrincipal.getSupportActionBar().setIcon(R.drawable.ic_launcher);
 		
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
@@ -85,7 +93,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
 		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(2);
+		actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(3);
 	}
 
 

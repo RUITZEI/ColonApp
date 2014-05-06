@@ -5,7 +5,8 @@
     <color name="activated_color">#8D0D0C</color>
     <color name="default_color">#ffffff</color>
     <color name="negro">#0f0f0f</color>
-    <color name="gris">#1A1A1A </color>
+    <color name="gris">#1B1A1A </color>
     <color name="rojo_texto">#A60606 </color>
+    <color name="gris_texto">#908D7D </color>
 </resources>
 
