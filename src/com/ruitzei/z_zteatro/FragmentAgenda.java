@@ -29,6 +29,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdaptadorAgenda;
+import com.ruitzei.utilitarios.AdaptadorAgenda2;
+import com.ruitzei.utilitarios.ParserColon;
 import com.ruitzei.utilitarios.RssParser;
 
 public class FragmentAgenda extends ListFragment implements OnNavigationListener {
@@ -39,11 +41,12 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	//Necesito la referencia a la vista para poder llamar a los botones que tenga.
 	private View view;
 	
-	private AdaptadorAgenda adapterNoticias;
+	private AdaptadorAgenda2 adapterNoticias;
 	private MainActivity actividadPrincipal;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
+	private static final String RSS_COLON = "http://juan-i.com.ar/manu/TSperformanceCO.xml";
 	
 	
 	@Override
@@ -59,13 +62,13 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		//actividadPrincipal.getSupportActionBar().setCustomView(R.layout.actionbar_custom);
 		//actividadPrincipal.getSupportActionBar().setDisplayShowCustomEnabled(true);
 		
-		actividadPrincipal.getSupportActionBar().setIcon(R.drawable.ic_launcher);
+		//actividadPrincipal.getSupportActionBar().setIcon(R.drawable.ic_launcher);
 		
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
         	mostrarLista();
         }else{
-        	new DescargarYMostrar().execute(OLE);
+        	new DescargarYMostrar().execute(RSS_COLON);
         }
 		
 		setHasOptionsMenu(true);
@@ -93,13 +96,13 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
 		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(3);
+		actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(0);
 	}
 
 
 	public void mostrarLista(){		
 		ListView lista = (ListView)this.view.findViewById(android.R.id.list);
-		adapterNoticias = new AdaptadorAgenda(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
+		adapterNoticias = new AdaptadorAgenda2(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
 	    lista.setAdapter(adapterNoticias);
 	    
 	    //Me aseguro que siempre empieze mostrando todo sin filtrar.
@@ -162,7 +165,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
     
     private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException, ParseException {
         InputStream stream = null;
-        RssParser oleParser = new RssParser();
+        ParserColon oleParser = new ParserColon();
         try {
             stream = downloadUrl(urlString);
             System.out.println("antes del parse");            
@@ -216,7 +219,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		switch (item.getItemId()) {
 			case R.id.refresh_icon:
 				Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
-				new DescargarYMostrar().execute(OLE);
+				new DescargarYMostrar().execute(RSS_COLON);
 	      default:
 	         return super.onOptionsItemSelected(item);
 	   }
@@ -226,8 +229,11 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		switch (itemPosition) {
+		case 1:
+			adapterNoticias.getFilter().filter(null);
+			break;
 		case 2:
-			Toast.makeText(getActivity(), "Ballet Selecetd", Toast.LENGTH_SHORT).show();
+			adapterNoticias.getFilter().filter("Si");
 			break;
 		case 3:
 			adapterNoticias.getFilter().filter("No");

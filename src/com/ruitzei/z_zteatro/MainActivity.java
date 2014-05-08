@@ -18,11 +18,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 
+import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.utilitarios.NoticiaOle;
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
 
-	private List<NoticiaOle> noticias;
+	private List<ItemAgenda> noticias;
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
 	private ArrayAdapter<CharSequence> adapterSpinner;
 
@@ -151,7 +152,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	/**
 	 * Para que los otros fragments puedan acceder a las noticias.
 	 */
-	public List<NoticiaOle> getNoticias(){
+	public List<ItemAgenda> getNoticias(){
 		
 		return this.noticias;		
 	}
@@ -164,7 +165,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	
 	
 	//Setear las noticias por si las consegui desde la agenda misma o de donde fuera.
-	public void setNoticias (List<NoticiaOle> noticias){
+	public void setNoticias (List<ItemAgenda> noticias){
 		this.noticias = noticias;
 	}
 	

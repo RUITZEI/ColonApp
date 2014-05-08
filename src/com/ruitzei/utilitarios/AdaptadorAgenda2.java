@@ -2,9 +2,7 @@ package com.ruitzei.utilitarios;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +10,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.ruitzei.z_zteatro.R;
 
-public class AdaptadorAgenda extends ArrayAdapter<Object> implements Filterable{
+public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable{
 	Context contexto;
-	private List<NoticiaOle> noticias;
+	private List<ItemAgenda> noticias;
 	private ImageLoader mImageLoader;
-	private List<NoticiaOle> noticiasFiltradas;
+	private List<ItemAgenda> noticiasFiltradas;
 	
 	
-	public AdaptadorAgenda (Context contexto, List<NoticiaOle> noticias){
+	public AdaptadorAgenda2 (Context contexto, List<ItemAgenda> noticias){
 		super(contexto, R.layout.item_agenda_2);
 		this.contexto = contexto;
 		this.noticias  = noticias;
@@ -70,9 +67,9 @@ public class AdaptadorAgenda extends ArrayAdapter<Object> implements Filterable{
 		
 		//
 		placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
-		placeHolder.titulo.setText(noticiasFiltradas.get(position).getTitulo());
+		placeHolder.titulo.setText(noticiasFiltradas.get(position).getTipo());
 		placeHolder.descripcion.setText(noticiasFiltradas.get(position).getDescripcion());
-		placeHolder.fecha.setText(noticiasFiltradas.get(position).getFecha().toString().substring(0, 11));
+		placeHolder.fecha.setText(noticiasFiltradas.get(position).getFecha());
 
 		if (position % 2 == 0){
 			convertView.setBackgroundResource(R.drawable.selector_lista);
@@ -99,12 +96,12 @@ public class AdaptadorAgenda extends ArrayAdapter<Object> implements Filterable{
 			@Override
 			protected FilterResults performFiltering(CharSequence constraint) {		
 				if (constraint != null){
-					List<NoticiaOle> todasLasNoticias = noticias;
-					List<NoticiaOle> filtradas = new ArrayList<NoticiaOle>();
+					List<ItemAgenda> todasLasNoticias = noticias;
+					List<ItemAgenda> filtradas = new ArrayList<ItemAgenda>();
 					String palabraFiltro = constraint.toString().toLowerCase();
 					String palabraAFiltrar;					
 					for (int i = 0 ;i < todasLasNoticias.size(); i++){
-						palabraAFiltrar = todasLasNoticias.get(i).getTitulo().toLowerCase();
+						palabraAFiltrar = todasLasNoticias.get(i).getNombre().toLowerCase();
 						if( palabraAFiltrar.contains(palabraFiltro)){
 							filtradas.add(todasLasNoticias.get(i));
 						}
@@ -123,7 +120,7 @@ public class AdaptadorAgenda extends ArrayAdapter<Object> implements Filterable{
 			protected void publishResults(CharSequence constraint,
 					FilterResults results) {								
 				if (results.count > 0){
-					noticiasFiltradas = (ArrayList<NoticiaOle>)results.values;
+					noticiasFiltradas = (ArrayList<ItemAgenda>)results.values;
 					notifyDataSetChanged();				
 				}else{
 					noticiasFiltradas = noticias;
