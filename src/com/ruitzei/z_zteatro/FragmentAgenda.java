@@ -14,6 +14,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.OnNavigationListener;
@@ -33,16 +35,14 @@ import com.ruitzei.utilitarios.AdaptadorAgenda2;
 import com.ruitzei.utilitarios.ParserColon;
 import com.ruitzei.utilitarios.RssParser;
 
-public class FragmentAgenda extends ListFragment implements OnNavigationListener {
-	//private Button btnCargar;
-	//btnCargar = (Button)view.findViewById(R.id.btnCargar);
-
-	
+public class FragmentAgenda extends ListFragment implements OnNavigationListener {	
 	//Necesito la referencia a la vista para poder llamar a los botones que tenga.
 	private View view;
 	
 	private AdaptadorAgenda2 adapterNoticias;
 	private MainActivity actividadPrincipal;
+	private ListView lista;
+	private int ultimoItemClickeado = 0;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
@@ -55,6 +55,9 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		View view = inflater.inflate(R.layout.fragment_agenda, container, false);
 		this.view=view;
 		this.actividadPrincipal = ((MainActivity)getActivity());
+		this.lista = (ListView)view.findViewById(android.R.id.list);
+		//this.setRetainInstance(true);
+		
 		
 		//actividadPrincipal.getSupportActionBar().setIcon(android.R.color.transparent);
 		//actividadPrincipal.getSupportActionBar().setDisplayUseLogoEnabled(false);
@@ -73,6 +76,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		
 		setHasOptionsMenu(true);
 		//cargarSpinner();
+		agregarListenerLista();
 		
 		return view;
 	}
@@ -90,18 +94,17 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		((MainActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(adapterSpiiner, this);
 		//adapterSpiiner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);*/
-		
-		ArrayAdapter<CharSequence> adapterSpinner = ((MainActivity)getActivity()).getAdapterSpinner();
-		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(false);
-		actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
-		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		
-		actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(0);
+			ArrayAdapter<CharSequence> adapterSpinner = ((MainActivity)getActivity()).getAdapterSpinner();
+			actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(false);
+			actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
+			actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			
+			actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(ultimoItemClickeado);
 	}
 
 
 	public void mostrarLista(){		
-		ListView lista = (ListView)this.view.findViewById(android.R.id.list);
+		//ListView lista = (ListView)this.view.findViewById(android.R.id.list);
 		adapterNoticias = new AdaptadorAgenda2(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
 	    lista.setAdapter(adapterNoticias);
 	    
@@ -197,13 +200,23 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
     }
 	
     public void agregarListenerLista() {
-        ListView lista = (ListView)this.view.findViewById(android.R.id.list);
+        //ListView lista = (ListView)this.view.findViewById(android.R.id.list);
 
         lista.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				System.out.println("Se clickeo el elemento Nº "+ position );				
+					int position, long id) {			
+				Bundle args = new Bundle();
+				args.putString("link", actividadPrincipal.getNoticias().get(position).getLinkAdicional());
+				Fragment fragment = new FragmentWeb();
+				fragment.setArguments(args);
+				
+				System.out.println("Se clickeo el elemento Nº "+ position );
+				FragmentManager fragmentManager = actividadPrincipal.getSupportFragmentManager();
+				fragmentManager.beginTransaction()
+				.replace(R.id.container, fragment)
+				.addToBackStack("FragBack")
+				.commit();
 			}
 		});	
 	}
@@ -228,6 +241,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		ultimoItemClickeado = itemPosition;
 		switch (itemPosition) {
 		case 1:
 			adapterNoticias.getFilter().filter(null);
@@ -242,13 +256,34 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		default:
 			break;
 		}
+		
+		//ListView lista = (ListView)this.view.findViewById(android.R.id.list);
+		//lista.setSelectionFromTop(0, 0);
 		return false;
 	}
 	
 	@Override 
 	public void onDestroy(){
 		super.onDestroy();
+		//actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
+		//actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+	}
+	
+	@Override
+	public void onPause(){
+		super.onPause();
+		Toast.makeText(getActivity(), "Pausado", Toast.LENGTH_LONG).show();
 		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
 		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+	}
+	
+	/**
+	 * Aca no pregunto si existen noticias antes de cargar al spinner.
+	 */
+	@Override
+	public void onResume(){
+		super.onResume();
+		Toast.makeText(getActivity(), "Resumido", Toast.LENGTH_LONG).show();
+		agregarListenerLista();
 	}
 }

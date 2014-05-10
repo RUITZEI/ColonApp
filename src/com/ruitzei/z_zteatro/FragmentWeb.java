@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebSettings.PluginState;
 import android.widget.Toast;
 
 
@@ -23,7 +24,8 @@ public class FragmentWeb extends Fragment{
 	
 	private WebView web;
 	private final String COLON = "http://www.tuentrada.com/online/mobile/";
-	private final String FOTOS = "http://www.tuentrada.com/Online/brands/colon/tour/tour.html";
+	private final String WEB_COLON = "https://www.tuentrada.com/colon/Online/";
+
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,8 +38,10 @@ public class FragmentWeb extends Fragment{
 		web.requestFocus(View.FOCUS_DOWN);
 		web.setWebViewClient(new ClienteWeb());
 		web.getSettings().setBuiltInZoomControls(true);
-		web.loadUrl(COLON);
+		web.loadUrl(WEB_COLON + this.getArguments().getString("link"));
 		web.setWebChromeClient(new WebChromeClient());
+		
+		System.out.println(this.getArguments().getString("link"));
 		
 		
 		//importante para mostrar las coasas que quiero.
@@ -57,7 +61,7 @@ public class FragmentWeb extends Fragment{
 	 */
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		Toast.makeText(getActivity(), "ASD", Toast.LENGTH_LONG).show();
+		Toast.makeText(getActivity(), "ASD", Toast.LENGTH_SHORT).show();
 		menu.findItem(R.id.action_settings).setVisible(true);
 	}
 	
