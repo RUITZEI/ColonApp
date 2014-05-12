@@ -20,23 +20,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" >
-		<Button
-	        android:id="@+id/btn_web"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:textSize="12sp"
-	        android:text="Web de Tu Entrada">
-	    </Button>
-	    
-		<Button
-		    android:textSize="12sp"
-		    android:id="@+id/btn_colon"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:text="Web del Colon">
-	    </Button>
-	    
+        android:layout_weight="1" >   
 		<Button
 		    android:textSize="12sp"
 		    android:id="@+id/btn_programa"

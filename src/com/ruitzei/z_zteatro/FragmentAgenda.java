@@ -17,10 +17,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.OnNavigationListener;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +45,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	private AdaptadorAgenda2 adapterNoticias;
 	private MainActivity actividadPrincipal;
 	private ListView lista;
+	private SearchView searchView;
+	private MenuItem searchItem;
 	private int ultimoItemClickeado = 0;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
@@ -56,16 +61,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		this.view=view;
 		this.actividadPrincipal = ((MainActivity)getActivity());
 		this.lista = (ListView)view.findViewById(android.R.id.list);
-		//this.setRetainInstance(true);
 		
-		
-		//actividadPrincipal.getSupportActionBar().setIcon(android.R.color.transparent);
-		//actividadPrincipal.getSupportActionBar().setDisplayUseLogoEnabled(false);
-		//actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(false);
-		//actividadPrincipal.getSupportActionBar().setCustomView(R.layout.actionbar_custom);
-		//actividadPrincipal.getSupportActionBar().setDisplayShowCustomEnabled(true);
-		
-		//actividadPrincipal.getSupportActionBar().setIcon(R.drawable.ic_launcher);
+		setHasOptionsMenu(true);
 		
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
@@ -74,8 +71,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         	new DescargarYMostrar().execute(RSS_COLON);
         }
 		
-		setHasOptionsMenu(true);
-		//cargarSpinner();
 		agregarListenerLista();
 		
 		return view;
@@ -86,14 +81,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	 * Carga los String del archivo Values\Items_spinner.xml para agregarlos en el menu de la parte superior. 
 	 */	
 	private void cargarSpinner() {
-		/**
-		//ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(actividadPrincipal.getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
-		//ArrayAdapter<CharSequence> adapterSpiiner = ArrayAdapter.createFromResource(getActivity(), R.array.items_spinner, R.layout.item_spinner);
-		
-		((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-		((MainActivity)getActivity()).getSupportActionBar().setListNavigationCallbacks(adapterSpiiner, this);
-		//adapterSpiiner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);*/
 			ArrayAdapter<CharSequence> adapterSpinner = ((MainActivity)getActivity()).getAdapterSpinner();
 			actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(false);
 			actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
@@ -104,12 +91,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 
 
 	public void mostrarLista(){		
-		//ListView lista = (ListView)this.view.findViewById(android.R.id.list);
 		adapterNoticias = new AdaptadorAgenda2(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
 	    lista.setAdapter(adapterNoticias);
-	    
-	    //Me aseguro que siempre empieze mostrando todo sin filtrar.
-	    //actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(0);
 	   
 	    agregarListenerLista();
 	}
@@ -194,20 +177,26 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         // Comienza la descarga.
         conn.connect();
         InputStream stream = conn.getInputStream();
-        //Toast.makeText(this , "Se bajo el asunto", Toast.LENGTH_SHORT).show();
         System.out.println("se bajo el asunto");
         return stream;
     }
 	
-    public void agregarListenerLista() {
-        //ListView lista = (ListView)this.view.findViewById(android.R.id.list);
-
+	public void agregarListenerSearchView() {
+		searchView.setIconifiedByDefault(true);
+		searchView.setOnQueryTextListener(queryTextListener);
+		MenuItemCompat.setOnActionExpandListener(searchItem, onActionExpand);
+	}
+	
+    public void agregarListenerLista() {    	
         lista.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {			
+					int position, long id) {
+				MenuItemCompat.collapseActionView(searchItem);
+				
+
 				Bundle args = new Bundle();
-				args.putString("link", actividadPrincipal.getNoticias().get(position).getLinkAdicional());
+				args.putString("link", actividadPrincipal.getNoticias().get(position).getLink());
 				Fragment fragment = new FragmentWeb();
 				fragment.setArguments(args);
 				
@@ -223,8 +212,17 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
     
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		//Toast.makeText(getActivity(), "ASD", Toast.LENGTH_LONG).show();
-		menu.findItem(R.id.refresh_icon).setVisible(true);
+		super.onPrepareOptionsMenu(menu);
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+		super.onCreateOptionsMenu(menu, inflater);
+		menu.clear();
+		inflater.inflate(R.menu.menu_agenda, menu);
+		
+		searchItem = menu.findItem(R.id.action_search);
+		searchView = (SearchView)MenuItemCompat.getActionView(searchItem);
 	}
 	
 	@Override
@@ -233,9 +231,14 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 			case R.id.refresh_icon:
 				Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
 				new DescargarYMostrar().execute(RSS_COLON);
+				break;
+			case R.id.action_search:
+				agregarListenerSearchView();
+				break;
 	      default:
 	         return super.onOptionsItemSelected(item);
 	   }
+		return super.onOptionsItemSelected(item);
 	}
 
 
@@ -272,18 +275,47 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	@Override
 	public void onPause(){
 		super.onPause();
-		Toast.makeText(getActivity(), "Pausado", Toast.LENGTH_LONG).show();
-		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
+		//Toast.makeText(getActivity(), "Pausado", Toast.LENGTH_LONG).show();
 		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
+		
 	}
 	
-	/**
-	 * Aca no pregunto si existen noticias antes de cargar al spinner.
-	 */
+
 	@Override
 	public void onResume(){
 		super.onResume();
-		Toast.makeText(getActivity(), "Resumido", Toast.LENGTH_LONG).show();
+		//Toast.makeText(getActivity(), "Resumido", Toast.LENGTH_LONG).show();
 		agregarListenerLista();
+		if (actividadPrincipal.existenNoticias()){
+			cargarSpinner();
+		}
 	}
+	
+	final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+		@Override
+		public boolean onQueryTextSubmit(String arg0) {
+			return false;
+		}
+		
+		@Override
+		public boolean onQueryTextChange(String arg0) {
+			adapterNoticias.getFilter().filter(arg0);
+			//MenuItemCompat.setOnActionExpandListener(searchItem, onActionExpand);
+			return false;
+		}
+	};
+	
+	final MenuItemCompat.OnActionExpandListener onActionExpand = new MenuItemCompat.OnActionExpandListener() {		
+		@Override
+		public boolean onMenuItemActionExpand(MenuItem item) {
+			return true;
+		}
+		
+		@Override
+		public boolean onMenuItemActionCollapse(MenuItem item) {
+			adapterNoticias.getFilter().filter(null);
+			return true;
+		}
+	};
 }

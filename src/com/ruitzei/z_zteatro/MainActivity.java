@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,9 +27,7 @@ import com.ruitzei.utilitarios.NoticiaOle;
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
 
 	private List<ItemAgenda> noticias;
-	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
 	private ArrayAdapter<CharSequence> adapterSpinner;
-
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,9 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		//Para poder usar el iconito de overFlow en todos los dispositivos.
 		//quitarBotonOpciones();
 		
+		getSupportActionBar().setDisplayShowTitleEnabled(true);
+		
+		
 		adapterSpinner = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
 		
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
@@ -52,12 +56,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Aca estoy inflando el Menu y ocultando el Item.
 		getMenuInflater().inflate(R.menu.main, menu);
-		menu.findItem(R.id.action_settings).setVisible(false);
-		menu.findItem(R.id.refresh_icon).setVisible(false);
-		//menu.setGroupVisible(R.id.filtro, false);
 		return true;
 		//return super.onCreateOptionsMenu(menu);
 	}
@@ -65,10 +64,10 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		/**if (id == R.id.action_settings) {
 			//Toast.makeText(this, "Aprete el Action", Toast.LENGTH_SHORT).show();
 			//return true;
-		}
+		}*/
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -96,6 +95,14 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			Button botonPrograma = (Button)rootView.findViewById(R.id.btn_programa);
 			botonPrograma.setOnClickListener(this);
 			return rootView;
+		}
+		
+		@Override
+		public void onResume(){
+			super.onResume();
+			((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+			((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
+			((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
 		}
 		
 		@Override
@@ -138,7 +145,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		//Enable Up button only  if there are entries in the back stack
 		boolean canback = getSupportFragmentManager().getBackStackEntryCount()>0;
 		getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
-		deberiaMostrarActionBar(canback);
+		//deberiaMostrarActionBar(canback);
 	}
 	
 	@Override
