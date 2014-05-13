@@ -13,18 +13,18 @@
             <com.android.volley.toolbox.NetworkImageView
 		        android:id="@+id/imageView1"
 		        android:layout_width="match_parent"
-		        android:layout_height="80dp"
-		        android:src="@drawable/ic_launcher" />        
+		        android:layout_height="100dp"
+		        android:src="@drawable/ic_launcher"/>        
     </LinearLayout>
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="0dp"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:layout_weight="2"
-        android:paddingLeft="5dp">
+        android:paddingLeft="8dp">
        		<TextView 
                 android:id="@+id/textView3"
-                android:textSize="12sp"
+                android:textSize="14sp"
                	android:textStyle="bold"
                 android:textColor="@color/rojo_texto"
                 android:text="25 de Mayo del 2003"
@@ -35,7 +35,7 @@
         
             <TextView
                 android:id="@+id/textView1"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="#f0f0f0"
                 android:text="Titulo1"

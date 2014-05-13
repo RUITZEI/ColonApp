@@ -97,6 +97,7 @@ public class FragmentWeb extends Fragment{
 		super.onResume();	
 		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
+		actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(false);
 		actividadPrincipal.getSupportActionBar().setTitle(R.string.fragment_web);
 	}
 }

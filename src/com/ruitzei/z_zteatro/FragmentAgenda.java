@@ -12,6 +12,7 @@ import android.R.anim;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -85,7 +86,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 			actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(false);
 			actividadPrincipal.getSupportActionBar().setListNavigationCallbacks(adapterSpinner, this);
 			actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			
 			actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(ultimoItemClickeado);
 	}
 
@@ -246,16 +246,21 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		ultimoItemClickeado = itemPosition;
 		switch (itemPosition) {
+		case 0:
+			adapterNoticias.getFilter().filter("");
+			break;
 		case 1:
-			adapterNoticias.getFilter().filter(null);
+			adapterNoticias.getFilter().filter("opera");
 			break;
 		case 2:
-			adapterNoticias.getFilter().filter("Si");
+			adapterNoticias.getFilter().filter("ballet");
 			break;
 		case 3:
-			adapterNoticias.getFilter().filter("No");
+			adapterNoticias.getFilter().filter("concierto");
 			break;
-
+		case 4:
+			adapterNoticias.getFilter().filter("abono estelar");
+			break;
 		default:
 			break;
 		}
@@ -287,6 +292,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		super.onResume();
 		//Toast.makeText(getActivity(), "Resumido", Toast.LENGTH_LONG).show();
 		agregarListenerLista();
+		actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(true);
+		actividadPrincipal.getSupportActionBar().setIcon(android.R.color.transparent);
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
 		}
@@ -301,7 +308,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		@Override
 		public boolean onQueryTextChange(String arg0) {
 			adapterNoticias.getFilter().filter(arg0);
-			//MenuItemCompat.setOnActionExpandListener(searchItem, onActionExpand);
 			return false;
 		}
 	};
@@ -314,7 +320,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		
 		@Override
 		public boolean onMenuItemActionCollapse(MenuItem item) {
-			adapterNoticias.getFilter().filter(null);
+			//adapterNoticias.getFilter().filter("");
+			actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(ultimoItemClickeado);
 			return true;
 		}
 	};

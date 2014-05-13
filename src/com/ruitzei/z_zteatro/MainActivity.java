@@ -20,6 +20,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.utilitarios.NoticiaOle;
@@ -103,6 +104,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			((MainActivity)getActivity()).getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			((MainActivity)getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
 			((MainActivity)getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+			((MainActivity)getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
 		}
 		
 		@Override
@@ -111,20 +113,23 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			switch (v.getId()) {
 			case R.id.btn_agenda:
 				fragment = new FragmentAgenda();
+				
+				FragmentManager fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
+				fragmentManager.popBackStack();
+				fragmentManager.beginTransaction()
+				.replace(R.id.container, fragment)
+				.addToBackStack("FragBack")
+				.commit();
 				break;
 			case R.id.btn_programa:
-				fragment = new FragmentWeb();
+				Toast.makeText(getActivity(), "Programa", Toast.LENGTH_SHORT).show();
+				//fragment = new FragmentWeb();
 				break;
 			default:
 				break;
 			}
 			
-			FragmentManager fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
-			fragmentManager.popBackStack();
-			fragmentManager.beginTransaction()
-			.replace(R.id.container, fragment)
-			.addToBackStack("FragBack")
-			.commit();
+
 		}
 		
 	}

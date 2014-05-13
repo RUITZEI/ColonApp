@@ -4,13 +4,13 @@
     tools:context="com.ruitzei.z_zteatro.MainActivity" >
     <item 
         android:id="@+id/refresh_icon"
-        android:orderInCategory="95"
+        android:orderInCategory="3"
         android:title="@string/refresh_icon"
         android:icon="@drawable/ic_action_refresh"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/action_search"
-        android:orderInCategory="96"
+        android:orderInCategory="1"
         android:title="@string/action_search"
         android:icon="@drawable/ic_action_search"
         app:showAsAction="ifRoom|collapseActionView"
