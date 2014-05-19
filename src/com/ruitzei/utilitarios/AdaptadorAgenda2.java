@@ -36,15 +36,15 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 	
 	private static class PlaceHolder{
 		TextView tipo;
-		TextView descripcion;
+		TextView nombre;
 		TextView fecha;
 		NetworkImageView foto;
 	
 		
 		public static PlaceHolder generate (View convertView){
 			PlaceHolder placeHolder = new PlaceHolder();
-			placeHolder.tipo = (TextView)convertView.findViewById(R.id.textView1);
-			placeHolder.descripcion = (TextView)convertView.findViewById(R.id.textView2);
+			placeHolder.nombre = (TextView)convertView.findViewById(R.id.textView1);
+			placeHolder.tipo = (TextView)convertView.findViewById(R.id.textView2);
 			placeHolder.fecha = (TextView)convertView.findViewById(R.id.textView3);
 			placeHolder.foto=(NetworkImageView)convertView.findViewById(R.id.imageView1);
 			
@@ -68,7 +68,7 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 		//
 		placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
 		placeHolder.tipo.setText(noticiasFiltradas.get(position).getTipo());
-		placeHolder.descripcion.setText(noticiasFiltradas.get(position).getDescripcion());
+		placeHolder.nombre.setText(noticiasFiltradas.get(position).getNombre());
 		placeHolder.fecha.setText(noticiasFiltradas.get(position).getFecha());
 
 		if (position % 2 == 0){

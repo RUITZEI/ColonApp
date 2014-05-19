@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -12,9 +14,11 @@ import android.R.anim;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.print.PrintAttributes.Resolution;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -31,6 +35,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -49,10 +54,11 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	private SearchView searchView;
 	private MenuItem searchItem;
 	private int ultimoItemClickeado = 0;
+	private Hashtable<Integer, String> itemsSpinner;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
-	private static final String RSS_COLON = "http://juan-i.com.ar/manu/TSperformanceCO.xml";
+	private static final String RSS_COLON = "https://www.tuentrada.com/colon/Online/eventsXML.asp";
 	
 	
 	@Override
@@ -64,6 +70,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		this.lista = (ListView)view.findViewById(android.R.id.list);
 		
 		setHasOptionsMenu(true);
+		
+    	inicializarHash();
 		
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
@@ -182,9 +190,11 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
     }
 	
 	public void agregarListenerSearchView() {
-		searchView.setIconifiedByDefault(true);
-		searchView.setOnQueryTextListener(queryTextListener);
-		MenuItemCompat.setOnActionExpandListener(searchItem, onActionExpand);
+		if (actividadPrincipal.existenNoticias()){
+			searchView.setIconifiedByDefault(true);
+			searchView.setOnQueryTextListener(queryTextListener);
+			MenuItemCompat.setOnActionExpandListener(searchItem, onActionExpand);
+		}
 	}
 	
     public void agregarListenerLista() {    	
@@ -192,8 +202,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				MenuItemCompat.collapseActionView(searchItem);
-				
+				MenuItemCompat.collapseActionView(searchItem);				
 
 				Bundle args = new Bundle();
 				args.putString("link", actividadPrincipal.getNoticias().get(position).getLink());
@@ -223,6 +232,10 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		
 		searchItem = menu.findItem(R.id.action_search);
 		searchView = (SearchView)MenuItemCompat.getActionView(searchItem);
+		
+		//Esto arregla el bug que no ensanchaba correctamente al SearchView.
+		FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+		searchView.setLayoutParams(lp);
 	}
 	
 	@Override
@@ -245,28 +258,8 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		ultimoItemClickeado = itemPosition;
-		switch (itemPosition) {
-		case 0:
-			adapterNoticias.getFilter().filter("");
-			break;
-		case 1:
-			adapterNoticias.getFilter().filter("opera");
-			break;
-		case 2:
-			adapterNoticias.getFilter().filter("ballet");
-			break;
-		case 3:
-			adapterNoticias.getFilter().filter("concierto");
-			break;
-		case 4:
-			adapterNoticias.getFilter().filter("abono estelar");
-			break;
-		default:
-			break;
-		}
 		
-		//ListView lista = (ListView)this.view.findViewById(android.R.id.list);
-		//lista.setSelectionFromTop(0, 0);
+		adapterNoticias.getFilter().filter(this.itemsSpinner.get(itemPosition));
 		return false;
 	}
 	
@@ -281,9 +274,21 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	public void onPause(){
 		super.onPause();
 		//Toast.makeText(getActivity(), "Pausado", Toast.LENGTH_LONG).show();
-		actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
+		//actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		//actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
 		
+	}
+	
+	public void inicializarHash(){
+		this.itemsSpinner = new Hashtable<Integer, String>();
+		
+		String[] itemSpinner = getResources().getStringArray(R.array.items_spinner);
+		
+		for (int i = 0; i < itemSpinner.length; i++) {
+			this.itemsSpinner.put(i, itemSpinner[i]);
+		}
+		//En la posicion 0 tiene que estar el default: en este caso VER TODOS.
+		this.itemsSpinner.put(0, "");
 	}
 	
 
@@ -292,8 +297,10 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		super.onResume();
 		//Toast.makeText(getActivity(), "Resumido", Toast.LENGTH_LONG).show();
 		agregarListenerLista();
+		actividadPrincipal.getSupportActionBar().setTitle("Agenda");
 		actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(true);
 		actividadPrincipal.getSupportActionBar().setIcon(android.R.color.transparent);
+		
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
 		}

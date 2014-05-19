@@ -128,10 +128,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			default:
 				break;
 			}
-			
-
-		}
-		
+		}		
 	}
 	
 	
@@ -205,4 +202,10 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			getSupportActionBar().hide();
 		}
 	}	
+	
+	@Override
+	public void onDestroy(){
+		super.onDestroy();
+		Toast.makeText(this, "Desroy", Toast.LENGTH_SHORT).show();
+	}
 }

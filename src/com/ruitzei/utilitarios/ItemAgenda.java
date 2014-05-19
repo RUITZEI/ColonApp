@@ -1,32 +1,50 @@
 package com.ruitzei.utilitarios;
 
 public class ItemAgenda {
-	private String tipo;
+	
 	private String nombre;
-	private String descripcion;
+	private String tipo;
 	private String fecha;
 	private String link;
-	private String linkAdicional;
+	private String logoId;
+	private double minPrecio;
+	private double maxPrecio;
+	private int asientosLibres;
 	
-	public ItemAgenda(String tipo, String nombre, String descripcion, String fecha, String link, String linkAdicional){
-		setTipo(tipo);
+	public ItemAgenda(String nombre, String tipo,  String fecha, String link,
+					  String logoId, double minPrecio, double maxPrecio, int asientosLibres){
 		setNombre(nombre);
-		setDescripcion(descripcion);
+		setTipo(tipo);
 		setFecha(fecha);
 		setLink(link);
-		setLinkAdicional(linkAdicional);		
+		setLogoId(logoId);
+		setMinPrecio(minPrecio);
+		setMaxPrecio(maxPrecio);
+		setAsientosLibres(asientosLibres);
 	}
 	
+	private void setAsientosLibres(int asientosLibres) {
+		this.asientosLibres = asientosLibres;		
+	}
+
+	private void setMaxPrecio(double maxPrecio) {
+		this.maxPrecio = maxPrecio;		
+	}
+
+	private void setMinPrecio(double minPrecio) {
+		this.minPrecio = minPrecio;		
+	}
+
+	private void setLogoId(String logoId) {
+		this.logoId = logoId;		
+	}
+
 	private void setTipo(String tipo) {
 		this.tipo = tipo;		
 	}
 
 	public void setNombre(String nombre){
 		this.nombre=nombre;
-	}
-	
-	public void setDescripcion(String descripcion){
-		this.descripcion = descripcion;
 	}
 	
 	public void setFecha(String fecha){
@@ -37,9 +55,6 @@ public class ItemAgenda {
 		this.link = link;		
 	}
 	
-	public void setLinkAdicional(String linkAdicional){
-		this.linkAdicional = linkAdicional;		
-	}
 	
 	public String getTipo(){
 		return this.tipo;
@@ -49,10 +64,6 @@ public class ItemAgenda {
 		return this.nombre;		
 	}
 	
-	public String getDescripcion(){
-		return this.descripcion;		
-	}
-	
 	public String getFecha(){
 		return this.fecha;
 	}
@@ -60,8 +71,22 @@ public class ItemAgenda {
 	public String getLink(){
 		return this.link;
 	}
-	
-	public String getLinkAdicional(){
-		return this.linkAdicional;
+
+	public String getLogoId(){
+		return this.logoId;
 	}
+	
+	public double getMinPrecio(){
+		return this.minPrecio;
+	}
+	
+	public double getMaxPrecio(){
+		return this.maxPrecio;
+	}
+	
+	public int getAsientosLibres(){
+		return this.asientosLibres;
+	}
+	
+	
 }

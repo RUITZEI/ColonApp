@@ -4,10 +4,11 @@
     	<item>VER TODOS</item>
     	<item>OPERA</item>
     	<item>BALLET</item>
-    	<item>CONCIERTOS</item>
+    	<item>CONCIERTO</item>
     	<item>ABONO ESTELAR</item>
-    	<item>INTERPRETES ARGENTINOS</item>
-    	<item>COLON CONTEMPORANEO</item>   
+		<item>ABONO VESPERTINO</item>
+    	<item>ABONO NOCTURNO</item>   
+    	<item>GRAN ABONO</item>
 	</string-array>
     
 </resources>

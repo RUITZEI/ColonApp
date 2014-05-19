@@ -11,9 +11,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.webkit.WebSettings.PluginState;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -25,10 +28,12 @@ import android.widget.Toast;
 public class FragmentWeb extends Fragment{
 	
 	private WebView web;
-	private final String COLON = "http://www.tuentrada.com/online/mobile/";
-	private final String WEB_COLON = "https://www.tuentrada.com/colon/Online/";
-	private final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";
+	private static final String COLON = "http://www.tuentrada.com/online/mobile/";
+	private static final String WEB_COLON = "https://www.tuentrada.com/colon/Online/";
+	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";
+	
 	private MainActivity actividadPrincipal;
+    private ProgressBar progressBar;
 
 	
 	@Override
@@ -39,16 +44,32 @@ public class FragmentWeb extends Fragment{
 		
 		this.actividadPrincipal = ((MainActivity)getActivity());
 		
+		progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+		progressBar.setMax(100);
+		
 		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 		web = (WebView)view.findViewById(R.id.web_view);
 		web.getSettings().setJavaScriptEnabled(true);
 		web.requestFocus(View.FOCUS_DOWN);
 		web.setWebViewClient(new ClienteWeb());
-		web.getSettings().setBuiltInZoomControls(true);
-		web.loadUrl(COMPRA_COLON + this.getArguments().getString("link"));
+		web.getSettings().setBuiltInZoomControls(true);		
 		web.setWebChromeClient(new WebChromeClient());
 		
+		web.setWebChromeClient(new WebChromeClient(){
+			public void onProgressChanged(WebView view, int progress){
+				progressBar.setProgress(progress);
+				progressBar.setVisibility(View.VISIBLE);
+				
+				if (progress == 100){
+					progressBar.setVisibility(View.GONE);
+				}
+				
+			}
+		});
+		
+		web.loadUrl(COMPRA_COLON + this.getArguments().getString("link"));
+		//web.loadUrl("http://google.com");
 		System.out.println(this.getArguments().getString("link"));
 		
 		
@@ -82,10 +103,10 @@ public class FragmentWeb extends Fragment{
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	   // handle item selection
-	   switch (item.getItemId()) {
-	      case R.id.action_back:
-	    	  if(web.canGoBack()){
-	    		   web.goBack();
+		switch (item.getItemId()) {
+			case R.id.action_back:
+				if(web.canGoBack()){
+					web.goBack();
 	    	  }	         
 	      default:
 	         return super.onOptionsItemSelected(item);
@@ -99,5 +120,11 @@ public class FragmentWeb extends Fragment{
 		actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
 		actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(false);
 		actividadPrincipal.getSupportActionBar().setTitle(R.string.fragment_web);
+	}
+	
+	@Override 
+	public void onDestroy(){
+		super.onDestroy();
+		web.clearCache(true);
 	}
 }
