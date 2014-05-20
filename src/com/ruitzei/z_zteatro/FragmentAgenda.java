@@ -36,11 +36,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdaptadorAgenda;
 import com.ruitzei.utilitarios.AdaptadorAgenda2;
+import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.utilitarios.ParserColon;
 import com.ruitzei.utilitarios.RssParser;
 
@@ -202,12 +204,11 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				MenuItemCompat.collapseActionView(searchItem);				
-
 				Bundle args = new Bundle();
-				args.putString("link", actividadPrincipal.getNoticias().get(position).getLink());
+				args.putString("link", adapterNoticias.getItem(position).getLink());
 				Fragment fragment = new FragmentWeb();
 				fragment.setArguments(args);
+				MenuItemCompat.collapseActionView(searchItem);
 				
 				System.out.println("Se clickeo el elemento Nº "+ position );
 				FragmentManager fragmentManager = actividadPrincipal.getSupportFragmentManager();
@@ -329,6 +330,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		public boolean onMenuItemActionCollapse(MenuItem item) {
 			//adapterNoticias.getFilter().filter("");
 			actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(ultimoItemClickeado);
+			adapterNoticias.getFilter().filter(itemsSpinner.get(ultimoItemClickeado));
 			return true;
 		}
 	};

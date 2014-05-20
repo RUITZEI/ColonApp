@@ -22,7 +22,7 @@ public class ParserColon {
 	private static final String ATT_LOGOID = "performance_logo1";
 	private static final String ATT_MINPRECIO = "min_price";
 	private static final String ATT_MAXPRECIO = "max_price";
-	private static final String ATT_ASIENTOSLIBRES = "available_seats";
+	private static final String ATT_DISPONIBILIDAD = "availability_status";
 	
 	public List<ItemAgenda> parse(InputStream in) throws XmlPullParserException, IOException{
 		try {
@@ -65,7 +65,7 @@ public class ParserColon {
 		String logoId = null;
 		double minPrecio = 0;
 		double maxPrecio = 0;
-		int asientosLibres = 0;		
+		char disponibilidad = ' ';		
 		
 		while (parser.next() != XmlPullParser.END_TAG){
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -87,14 +87,14 @@ public class ParserColon {
 				minPrecio = leerMinPrecio(parser);				
 			}else if (name.equals(ATT_MAXPRECIO)){
 				maxPrecio = leerMaxPrecio(parser);				
-			}else if (name.equals(ATT_ASIENTOSLIBRES)){
-				asientosLibres = leerAsientosLibres(parser);
+			}else if (name.equals(ATT_DISPONIBILIDAD)){
+				disponibilidad = leerDisponibilidad(parser);
 			}else{			
 				skip(parser);
 			}			
 		}	
 
-		return new ItemAgenda(nombre, tipo, fecha, link, logoId, minPrecio, maxPrecio, asientosLibres);
+		return new ItemAgenda(nombre, tipo, fecha, link, logoId, minPrecio, maxPrecio, disponibilidad);
 	}
 	
 	
@@ -155,10 +155,10 @@ public class ParserColon {
 		return maxPrecio;
 	}
 	
-	private int leerAsientosLibres(XmlPullParser parser) throws IOException, XmlPullParserException {
-		parser.require(XmlPullParser.START_TAG, ns, ATT_ASIENTOSLIBRES);
-		int asientosLibres = Integer.parseInt(readText(parser));
-		parser.require(XmlPullParser.END_TAG, ns, ATT_ASIENTOSLIBRES);
+	private char leerDisponibilidad(XmlPullParser parser) throws IOException, XmlPullParserException {
+		parser.require(XmlPullParser.START_TAG, ns, ATT_DISPONIBILIDAD);
+		char asientosLibres = readText(parser).charAt(0);
+		parser.require(XmlPullParser.END_TAG, ns, ATT_DISPONIBILIDAD);
 		return asientosLibres;
 	}
 	

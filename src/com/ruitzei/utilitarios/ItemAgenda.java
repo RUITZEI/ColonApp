@@ -9,10 +9,10 @@ public class ItemAgenda {
 	private String logoId;
 	private double minPrecio;
 	private double maxPrecio;
-	private int asientosLibres;
+	private char disponibilidad;
 	
 	public ItemAgenda(String nombre, String tipo,  String fecha, String link,
-					  String logoId, double minPrecio, double maxPrecio, int asientosLibres){
+					  String logoId, double minPrecio, double maxPrecio, char disponibilidad){
 		setNombre(nombre);
 		setTipo(tipo);
 		setFecha(fecha);
@@ -20,11 +20,11 @@ public class ItemAgenda {
 		setLogoId(logoId);
 		setMinPrecio(minPrecio);
 		setMaxPrecio(maxPrecio);
-		setAsientosLibres(asientosLibres);
+		setDisponibilidad(disponibilidad);
 	}
 	
-	private void setAsientosLibres(int asientosLibres) {
-		this.asientosLibres = asientosLibres;		
+	private void setDisponibilidad(char disponibilidad) {
+		this.disponibilidad = disponibilidad;		
 	}
 
 	private void setMaxPrecio(double maxPrecio) {
@@ -84,8 +84,8 @@ public class ItemAgenda {
 		return this.maxPrecio;
 	}
 	
-	public int getAsientosLibres(){
-		return this.asientosLibres;
+	public char getDisponibilidad(){
+		return this.disponibilidad;
 	}
 	
 	

@@ -1,14 +1,17 @@
 package com.ruitzei.utilitarios;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -19,8 +22,7 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 	Context contexto;
 	private List<ItemAgenda> noticias;
 	private ImageLoader mImageLoader;
-	private List<ItemAgenda> noticiasFiltradas;
-	
+	private List<ItemAgenda> noticiasFiltradas;	
 	
 	public AdaptadorAgenda2 (Context contexto, List<ItemAgenda> noticias){
 		super(contexto, R.layout.item_agenda_2);
@@ -29,9 +31,15 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 		this.noticiasFiltradas = this.noticias;
 	}
 	
+
 	@Override
 	public int getCount(){
 		return noticiasFiltradas.size();
+	}
+	
+	@Override
+	public ItemAgenda getItem(int position){
+		return noticiasFiltradas.get(position);
 	}
 	
 	private static class PlaceHolder{
@@ -39,6 +47,7 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 		TextView nombre;
 		TextView fecha;
 		NetworkImageView foto;
+		ImageView disponibilidad;
 	
 		
 		public static PlaceHolder generate (View convertView){
@@ -47,6 +56,7 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 			placeHolder.tipo = (TextView)convertView.findViewById(R.id.textView2);
 			placeHolder.fecha = (TextView)convertView.findViewById(R.id.textView3);
 			placeHolder.foto=(NetworkImageView)convertView.findViewById(R.id.imageView1);
+			placeHolder.disponibilidad = (ImageView)convertView.findViewById(R.id.disponibilidad);
 			
 			return placeHolder;			
 		}		
@@ -70,7 +80,26 @@ public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable
 		placeHolder.tipo.setText(noticiasFiltradas.get(position).getTipo());
 		placeHolder.nombre.setText(noticiasFiltradas.get(position).getNombre());
 		placeHolder.fecha.setText(noticiasFiltradas.get(position).getFecha());
-
+		
+		//Poniendo el icono segun corresponda.
+		switch (noticiasFiltradas.get(position).getDisponibilidad()) {
+		case 'E':
+			placeHolder.disponibilidad.setImageResource(R.drawable.availability_excellent);			
+			break;
+		case 'G':
+			placeHolder.disponibilidad.setImageResource(R.drawable.availability_good);
+			break;
+		case 'L':
+			placeHolder.disponibilidad.setImageResource(R.drawable.availability_limited);
+			break;
+		case 'S':
+			placeHolder.disponibilidad.setImageResource(R.drawable.availability_sold_out);
+			break;
+		default:
+			break;
+		}
+		
+		//Fondo Gris o negro segun corresponda.
 		if (position % 2 == 0){
 			convertView.setBackgroundResource(R.drawable.selector_lista);
 		}else{

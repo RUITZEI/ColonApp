@@ -30,9 +30,8 @@
                 android:text="25 de Mayo del 2003"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                />      
-        
-        
+                />
+       		
             <TextView
                 android:id="@+id/textView1"
                 android:textSize="18sp"
@@ -51,6 +50,17 @@
                 android:layout_below="@+id/textView1"
                 android:text="Descripcion"
                 android:textColor="#f0f0f0"
-                android:textSize="15sp" />      
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/disponibilidad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/textView1"
+                android:layout_alignParentRight="true"
+                android:paddingRight="6dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/availability_excellent" />
+      
     </RelativeLayout>
 </LinearLayout>
