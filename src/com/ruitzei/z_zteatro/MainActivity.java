@@ -110,11 +110,12 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		@Override
 		public void onClick(View v){
 			Fragment fragment = null;
+			FragmentManager fragmentManager = null;
 			switch (v.getId()) {
 			case R.id.btn_agenda:
 				fragment = new FragmentAgenda();
 				
-				FragmentManager fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
+				fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
 				fragmentManager.popBackStack();
 				fragmentManager.beginTransaction()
 				.replace(R.id.container, fragment)
@@ -122,8 +123,16 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 				.commit();
 				break;
 			case R.id.btn_programa:
-				Toast.makeText(getActivity(), "Programa", Toast.LENGTH_SHORT).show();
-				//fragment = new FragmentWeb();
+				Bundle args = new Bundle();
+				args.putString("link", "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf");
+				fragment = new FragmentWeb();
+				fragment.setArguments(args);
+
+				fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
+				fragmentManager.beginTransaction()
+				.replace(R.id.container, fragment)
+				.addToBackStack("FragBack")
+				.commit();
 				break;
 			default:
 				break;

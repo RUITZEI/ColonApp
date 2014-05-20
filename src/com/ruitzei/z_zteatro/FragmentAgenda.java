@@ -56,11 +56,13 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	private SearchView searchView;
 	private MenuItem searchItem;
 	private int ultimoItemClickeado = 0;
-	private Hashtable<Integer, String> itemsSpinner;
+	private String[] itemsSpinner;
 	
 	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
 	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
 	private static final String RSS_COLON = "https://www.tuentrada.com/colon/Online/eventsXML.asp";
+	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";
+
 	
 	
 	@Override
@@ -73,7 +75,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		
 		setHasOptionsMenu(true);
 		
-    	inicializarHash();
+    	inicializarElementosSpinner();
 		
 		if (actividadPrincipal.existenNoticias()){
 			cargarSpinner();
@@ -151,8 +153,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         		Toast.makeText(getActivity(), "Descarga correcta", Toast.LENGTH_LONG).show();
             	mostrarLista();
             	cargarSpinner();
-        	} else {
-        		
+        	} else {        		
         		Toast.makeText(getActivity(),"Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar", Toast.LENGTH_LONG).show();
         	}   
         	asycdialog.dismiss();        	
@@ -204,18 +205,24 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				Bundle args = new Bundle();
-				args.putString("link", adapterNoticias.getItem(position).getLink());
-				Fragment fragment = new FragmentWeb();
-				fragment.setArguments(args);
-				MenuItemCompat.collapseActionView(searchItem);
 				
-				System.out.println("Se clickeo el elemento Nº "+ position );
-				FragmentManager fragmentManager = actividadPrincipal.getSupportFragmentManager();
-				fragmentManager.beginTransaction()
-				.replace(R.id.container, fragment)
-				.addToBackStack("FragBack")
-				.commit();
+				boolean tieneAsientosDisponibles = adapterNoticias.getItem(position).getDisponibilidad() != 'S'; 
+				if (tieneAsientosDisponibles){
+					Bundle args = new Bundle();
+					args.putString("link", COMPRA_COLON+adapterNoticias.getItem(position).getLink());
+					Fragment fragment = new FragmentWeb();
+					fragment.setArguments(args);
+					MenuItemCompat.collapseActionView(searchItem);
+					
+					System.out.println("Se clickeo el elemento Nº "+ position );
+					FragmentManager fragmentManager = actividadPrincipal.getSupportFragmentManager();
+					fragmentManager.beginTransaction()
+					.replace(R.id.container, fragment)
+					.addToBackStack("FragBack")
+					.commit();
+				}else{
+					Toast.makeText(getActivity(),"Este evento no posee asientos disponibles", Toast.LENGTH_SHORT).show();					
+				}
 			}
 		});	
 	}
@@ -260,43 +267,19 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		ultimoItemClickeado = itemPosition;
 		
-		adapterNoticias.getFilter().filter(this.itemsSpinner.get(itemPosition));
+		adapterNoticias.getFilter().filter(this.itemsSpinner[itemPosition]);
 		return false;
 	}
-	
-	@Override 
-	public void onDestroy(){
-		super.onDestroy();
-		//actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
-		//actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-	}
-	
-	@Override
-	public void onPause(){
-		super.onPause();
-		//Toast.makeText(getActivity(), "Pausado", Toast.LENGTH_LONG).show();
-		//actividadPrincipal.getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		//actividadPrincipal.getSupportActionBar().setDisplayShowTitleEnabled(true);
-		
-	}
-	
-	public void inicializarHash(){
-		this.itemsSpinner = new Hashtable<Integer, String>();
-		
-		String[] itemSpinner = getResources().getStringArray(R.array.items_spinner);
-		
-		for (int i = 0; i < itemSpinner.length; i++) {
-			this.itemsSpinner.put(i, itemSpinner[i]);
-		}
-		//En la posicion 0 tiene que estar el default: en este caso VER TODOS.
-		this.itemsSpinner.put(0, "");
+
+	public void inicializarElementosSpinner(){
+		this.itemsSpinner = getResources().getStringArray(R.array.items_spinner);		
+		this.itemsSpinner[0] = "";
 	}
 	
 
 	@Override
 	public void onResume(){
 		super.onResume();
-		//Toast.makeText(getActivity(), "Resumido", Toast.LENGTH_LONG).show();
 		agregarListenerLista();
 		actividadPrincipal.getSupportActionBar().setTitle("Agenda");
 		actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -330,7 +313,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		public boolean onMenuItemActionCollapse(MenuItem item) {
 			//adapterNoticias.getFilter().filter("");
 			actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(ultimoItemClickeado);
-			adapterNoticias.getFilter().filter(itemsSpinner.get(ultimoItemClickeado));
+			adapterNoticias.getFilter().filter(itemsSpinner[ultimoItemClickeado]);
 			return true;
 		}
 	};

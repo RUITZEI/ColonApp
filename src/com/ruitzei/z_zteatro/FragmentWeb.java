@@ -27,14 +27,9 @@ import android.widget.Toast;
  */
 public class FragmentWeb extends Fragment{
 	
-	private WebView web;
-	private static final String COLON = "http://www.tuentrada.com/online/mobile/";
-	private static final String WEB_COLON = "https://www.tuentrada.com/colon/Online/";
-	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";
-	
+	private WebView web;	
 	private MainActivity actividadPrincipal;
     private ProgressBar progressBar;
-
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,7 +63,7 @@ public class FragmentWeb extends Fragment{
 			}
 		});
 		
-		web.loadUrl(COMPRA_COLON + this.getArguments().getString("link"));
+		web.loadUrl(this.getArguments().getString("link"));
 		//web.loadUrl("http://google.com");
 		System.out.println(this.getArguments().getString("link"));
 		
@@ -78,9 +73,7 @@ public class FragmentWeb extends Fragment{
 		
 		
 		return view;
-	}
-		
-	
+	}	
 	
 	/**
 	 * Importante: Esto solo se llama si en el onCreate() de cada fragment llamo al
