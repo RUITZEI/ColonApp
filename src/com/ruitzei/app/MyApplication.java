@@ -1,4 +1,4 @@
-package com.ruitzei.z_zteatro;
+package com.ruitzei.app;
 
 import android.app.Application;
 import android.content.Context;

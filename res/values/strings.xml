@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Teatro Colon App</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">Teatro Colon</string>
     <string name="action_settings">Settings</string>
     <string name="refresh_icon">Refresh</string>
     <string name="action_search">Search</string>
     <string name="action_back">Back</string>
     <string name="fragment_web">Comprar</string>
+    <string name="btn_programa">Descargar Programa</string>
+    <string name="btn_agenda">Ver Agenda</string>
+    <string name="msg_nointernet_agenda">Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar.</string>
+    <string name="msg_loading">Cargando...</string>
+    <string name="msg_no_seats_available">Este evento no posee asientos disponibles.</string>
+    <string name="msg_nointernet_programa">No está conectado a internet.</string>
+    <string name="msg_download_started">Descarga iniciada</string>
+    <string name="alert_download">Comenzar descarga?</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
 
 </resources>

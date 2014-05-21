@@ -1,42 +1,39 @@
-package com.ruitzei.z_zteatro;
+package com.ruitzei.app;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.ItemAgenda;
+import com.ruitzei.z_zteatro.R;
 
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
 
 	private List<ItemAgenda> noticias;
 	private ArrayAdapter<CharSequence> adapterSpinner;
+	private static final String LINK_PROGRAMA = "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +46,12 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 					  //.add(R.id.container, new FragmentAgenda()).commit();
 		}
 		
-		//Para poder usar el iconito de overFlow en todos los dispositivos.
-		//quitarBotonOpciones();
-		
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
-		
-		
+				
 		adapterSpinner = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
 		
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
-		shouldDisplayHomeUp();
-		
+		shouldDisplayHomeUp();		
 	}
 
 
@@ -72,8 +64,8 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		/**if (id == R.id.action_settings) {
+		/**int id = item.getItemId();
+		if (id == R.id.action_settings) {
 			//Toast.makeText(this, "Aprete el Action", Toast.LENGTH_SHORT).show();
 			//return true;
 		}*/
@@ -91,7 +83,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main_nuevo, container,
+			View rootView = inflater.inflate(R.layout.fragment_main, container,
 					false);
 			
 			/*
@@ -117,39 +109,47 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		
 		@Override
 		public void onClick(View v){
-			Fragment fragment = null;
-			FragmentManager fragmentManager = null;
 			switch (v.getId()) {
 			case R.id.btn_agenda:
-				fragment = new FragmentAgenda();
 				
-				fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
+				Fragment fragment = new FragmentAgenda();
+				
+				FragmentManager fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
 				fragmentManager.popBackStack();
 				fragmentManager.beginTransaction()
 				.replace(R.id.container, fragment)
 				.addToBackStack("FragBack")
 				.commit();
 				break;
-			case R.id.btn_programa:
-				/*Bundle args = new Bundle();
-				args.putString("link", "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf");
-				fragment = new FragmentWeb();
-				fragment.setArguments(args);
-
-				fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
-				fragmentManager.beginTransaction()
-				.replace(R.id.container, fragment)
-				.addToBackStack("FragBack")
-				.commit();*/
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf"));
-				startActivity(browserIntent);
+			case R.id.btn_programa:	
 				
-				//((MainActivity)getActivity()).downloadPdfContent("https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf");
+				if (((MainActivity)getActivity()).tieneConexionInternet() ){
+					confirmarDescarga();
+				}else{
+					Toast.makeText(getActivity(), R.string.msg_nointernet_programa, Toast.LENGTH_LONG).show();
+				}				
 				break;
 			default:
 				break;
 			}
-		}		
+		}
+		private void confirmarDescarga(){
+			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+			
+			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LINK_PROGRAMA));
+					startActivity(browserIntent);
+				}
+			       });			
+			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			           }
+			       });
+			builder.setMessage(R.string.alert_download);
+			
+			AlertDialog dialog = builder.show();
+		}
 	}
 	
 	
@@ -165,7 +165,6 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	 * abierto y entonces no deberia mostrar la AcionBar.
 	 */
 	public void shouldDisplayHomeUp(){
-		//Enable Up button only  if there are entries in the back stack
 		boolean canback = getSupportFragmentManager().getBackStackEntryCount()>0;
 		getSupportActionBar().setDisplayHomeAsUpEnabled(canback);
 		//deberiaMostrarActionBar(canback);
@@ -176,14 +175,12 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	    //Cuando toca la flechita para arriba, vuelve al main fragment.
 	    getSupportFragmentManager().popBackStack();
 	    return true;
-	}
-		
+	}		
 	
 	/**
 	 * Para que los otros fragments puedan acceder a las noticias.
 	 */
 	public List<ItemAgenda> getNoticias(){
-		
 		return this.noticias;		
 	}
 	
@@ -197,20 +194,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	//Setear las noticias por si las consegui desde la agenda misma o de donde fuera.
 	public void setNoticias (List<ItemAgenda> noticias){
 		this.noticias = noticias;
-	}
-	
-	private void quitarBotonOpciones() {
-	    try {
-	        ViewConfiguration config = ViewConfiguration.get(this);
-	        Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
-	        if(menuKeyField != null) {
-	            menuKeyField.setAccessible(true);
-	            menuKeyField.setBoolean(config, false);
-	        }
-	    } catch (Exception ex) {
-	        // Ignore
-	    }		
-	}
+	}	
 	
 	public ArrayAdapter<CharSequence> getAdapterSpinner(){
 		return this.adapterSpinner;
@@ -222,40 +206,15 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		} else{
 			getSupportActionBar().hide();
 		}
-	}	
+	}
 	
-	public void downloadPdfContent(String urlToDownload){
-
-        try {
-
-            String fileName="xyz";
-        String fileExtension=".pdf";
-
-//      download pdf file.
-
-           URL url = new URL(urlToDownload);
-           HttpURLConnection c = (HttpURLConnection) url.openConnection();
-           c.setRequestMethod("GET");
-           c.setDoOutput(true);
-           c.connect();
-           String PATH = Environment.getExternalStorageDirectory() + "/mydownloads/";
-           File file = new File(PATH);
-           file.mkdirs();
-           File outputFile = new File(file, fileName+fileExtension);
-           FileOutputStream fos = new FileOutputStream(outputFile);
-           InputStream is = c.getInputStream();
-           byte[] buffer = new byte[1024];
-           int len1 = 0;
-           while ((len1 = is.read(buffer)) != -1) {
-               fos.write(buffer, 0, len1);
-           }
-           fos.close();
-           is.close();
-
-          System.out.println("--pdf downloaded--ok--"+urlToDownload);
-       } catch (Exception e) {
-           e.printStackTrace();
-
-       }
-}
+	public boolean tieneConexionInternet() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+	        return true;
+	    }
+	    return false;
+	}
 }

@@ -1,40 +1,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.ruitzei.z_zteatro.MainActivity$PlaceholderFragment" >
-
-    <Button
-        android:id="@+id/btn_web"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Web de Tu Entrada">
-    </Button>
+    android:paddingBottom="2dp"
+    android:paddingTop="2dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    tools:context="com.ruitzei.app.MainActivity$PlaceholderFragment" >
     
-	<Button
-	    android:id="@+id/btn_colon"
+    <LinearLayout 
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Web del Colon">
-    </Button>
-    
-	<Button
-	    android:id="@+id/btn_programa"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/background_main">
+    </LinearLayout>
+    <LinearLayout 
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Programa del Dia">
-    </Button>
-    
-    <Button
-        android:id="@+id/btn_agenda"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="AGENDA">
-    </Button>            
-
+        android:layout_height="0dp"
+        android:layout_weight="1" >   
+		<Button
+		    android:textSize="16sp"
+		    android:id="@+id/btn_programa"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="#ffffff"
+	        android:text="@string/btn_programa"
+	        android:gravity="left|center_vertical"
+	        android:paddingLeft="40dp"
+	        android:paddingRight="20dp"
+	        android:drawableRight="@drawable/flecha_de"
+	        android:background="@drawable/custom_button_selector">
+	    </Button>
+	    
+	    <Button
+	        android:textSize="16sp"
+	        android:id="@+id/btn_agenda"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textColor="#ffffff"
+	        android:text="@string/btn_agenda"
+			android:gravity="left|center_vertical"
+	        android:paddingLeft="40dp"
+	        android:paddingRight="20dp"
+	        android:background="@drawable/custom_button_selector"
+	        android:drawableRight="@drawable/flecha_de">
+	    </Button>
+    </LinearLayout>
 </LinearLayout>

@@ -1,24 +1,18 @@
-package com.ruitzei.z_zteatro;
+package com.ruitzei.app;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 import org.xmlpull.v1.XmlPullParserException;
 
-import android.R.anim;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.print.PrintAttributes.Resolution;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
@@ -36,18 +30,14 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdapterAgenda;
-import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.utilitarios.ParserColon;
+import com.ruitzei.z_zteatro.R;
 
-public class FragmentAgenda extends ListFragment implements OnNavigationListener {	
-	//Necesito la referencia a la vista para poder llamar a los botones que tenga.
-	private View view;
-	
+public class FragmentAgenda extends ListFragment implements OnNavigationListener {		
 	private AdapterAgenda adapterNoticias;
 	private MainActivity actividadPrincipal;
 	private ListView lista;
@@ -56,18 +46,13 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	private int ultimoItemClickeado = 0;
 	private String[] itemsSpinner;
 	
-	private static final String URL = "http://edant.ole.com.ar/diario/ult_momento.xml";
-	private static final String OLE = "http://ole.feedsportal.com/c/33068/f/577712/index.rss";
 	private static final String RSS_COLON = "https://www.tuentrada.com/colon/Online/eventsXML.asp";
-	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";
-
-	
+	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState){
 		View view = inflater.inflate(R.layout.fragment_agenda, container, false);
-		this.view=view;
 		this.actividadPrincipal = ((MainActivity)getActivity());
 		this.lista = (ListView)view.findViewById(android.R.id.list);
 		
@@ -114,7 +99,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
     	
     	public DescargarYMostrar(){
     		asycdialog = new ProgressDialog(getActivity());
-    		asycdialog.setMessage("Cargando ...");
+    		asycdialog.setMessage(getString(R.string.msg_loading));
     		asycdialog.setCancelable(true);
     		asycdialog.setOnCancelListener(new OnCancelListener() {				
 				@Override
@@ -152,7 +137,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
             	mostrarLista();
             	cargarSpinner();
         	} else {        		
-        		Toast.makeText(getActivity(),"Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar", Toast.LENGTH_LONG).show();
+        		Toast.makeText(getActivity(),R.string.msg_nointernet_agenda, Toast.LENGTH_LONG).show();
         	}   
         	asycdialog.dismiss();        	
         }
@@ -198,6 +183,9 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		}
 	}
 	
+	/**
+	 * Paso como extra la ruta COMPLETA al link donde quiero acceder.
+	 */
     public void agregarListenerLista() {    	
         lista.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -219,7 +207,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 					.addToBackStack("FragBack")
 					.commit();
 				}else{
-					Toast.makeText(getActivity(),"Este evento no posee asientos disponibles", Toast.LENGTH_SHORT).show();					
+					Toast.makeText(getActivity(),R.string.msg_no_seats_available, Toast.LENGTH_LONG).show();					
 				}
 			}
 		});	
@@ -248,7 +236,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.refresh_icon:
-				Toast.makeText(getActivity(), "Refresh cliked",Toast.LENGTH_LONG).show();
 				new DescargarYMostrar().execute(RSS_COLON);
 				break;
 			case R.id.action_search:
@@ -260,7 +247,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		return super.onOptionsItemSelected(item);
 	}
 
-
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		ultimoItemClickeado = itemPosition;
@@ -268,12 +254,14 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		adapterNoticias.getFilter().filter(this.itemsSpinner[itemPosition]);
 		return false;
 	}
-
+	
+	/**
+	 * Dejo vacio en el primer elemento porque el primero es el elemento por defecto.
+	 */
 	public void inicializarElementosSpinner(){
 		this.itemsSpinner = getResources().getStringArray(R.array.items_spinner);		
 		this.itemsSpinner[0] = "";
-	}
-	
+	}	
 
 	@Override
 	public void onResume(){
@@ -309,7 +297,6 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 		
 		@Override
 		public boolean onMenuItemActionCollapse(MenuItem item) {
-			//adapterNoticias.getFilter().filter("");
 			actividadPrincipal.getSupportActionBar().setSelectedNavigationItem(ultimoItemClickeado);
 			adapterNoticias.getFilter().filter(itemsSpinner[ultimoItemClickeado]);
 			return true;

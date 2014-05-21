@@ -1,6 +1,4 @@
-package com.ruitzei.z_zteatro;
-
-import com.ruitzei.utilitarios.ClienteWeb;
+package com.ruitzei.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,13 +9,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.webkit.WebSettings.PluginState;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
+import com.ruitzei.utilitarios.ClienteWeb;
+import com.ruitzei.z_zteatro.R;
 
 
 /**

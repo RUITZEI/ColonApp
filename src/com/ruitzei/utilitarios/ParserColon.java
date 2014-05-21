@@ -2,9 +2,7 @@ package com.ruitzei.utilitarios;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
