@@ -8,5 +8,7 @@
     <color name="gris">#1B1A1A </color>
     <color name="rojo_texto">#A60606 </color>
     <color name="gris_texto">#908D7D </color>
+    <color name="rojo_btn">#880906</color>
+    <color name="btn_selected">#993A36</color>
 </resources>
 

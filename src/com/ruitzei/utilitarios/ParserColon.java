@@ -16,12 +16,10 @@ public class ParserColon {
 	
 	private String ns = null;
 	private static final String ATT_NOMBRE = "performance_description";
-	private static final String ATT_TIPO = "series_name";
+	private static final String ATT_TIPO = "performance_data2";
 	private static final String ATT_FECHA = "data1";
 	private static final String ATT_LINK = "performance_id";
 	private static final String ATT_LOGOID = "performance_logo1";
-	private static final String ATT_MINPRECIO = "min_price";
-	private static final String ATT_MAXPRECIO = "max_price";
 	private static final String ATT_DISPONIBILIDAD = "availability_status";
 	
 	public List<ItemAgenda> parse(InputStream in) throws XmlPullParserException, IOException{
@@ -63,8 +61,6 @@ public class ParserColon {
 		String fecha = null;
 		String link = null;
 		String logoId = null;
-		double minPrecio = 0;
-		double maxPrecio = 0;
 		char disponibilidad = ' ';		
 		
 		while (parser.next() != XmlPullParser.END_TAG){
@@ -82,11 +78,7 @@ public class ParserColon {
 			} else if (name.equals(ATT_LINK)){
 				link = leerLink(parser);
 			}else if (name.equals(ATT_LOGOID)){
-				logoId = leerLogoId(parser);
-			} else if (name.equals(ATT_MINPRECIO)){
-				minPrecio = leerMinPrecio(parser);				
-			}else if (name.equals(ATT_MAXPRECIO)){
-				maxPrecio = leerMaxPrecio(parser);				
+				logoId = leerLogoId(parser);			
 			}else if (name.equals(ATT_DISPONIBILIDAD)){
 				disponibilidad = leerDisponibilidad(parser);
 			}else{			
@@ -94,7 +86,7 @@ public class ParserColon {
 			}			
 		}	
 
-		return new ItemAgenda(nombre, tipo, fecha, link, logoId, minPrecio, maxPrecio, disponibilidad);
+		return new ItemAgenda(nombre, tipo, fecha, link, logoId, disponibilidad);
 	}
 	
 	
@@ -110,14 +102,7 @@ public class ParserColon {
 		String tipo = readText(parser);
 		parser.require(XmlPullParser.END_TAG, ns, ATT_TIPO);
 		
-		int posGuion = tipo.indexOf('-');
-		int finGuion = tipo.lastIndexOf('-');
-		
-		if ((finGuion < 0) || (finGuion == posGuion)){
-			finGuion = tipo.length();
-		}
-		
-		return tipo.substring(posGuion +2, finGuion);
+		return tipo;
 	}
 	
 	private String leerFecha(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -139,21 +124,7 @@ public class ParserColon {
 		String logoId = readText(parser);
 		parser.require(XmlPullParser.END_TAG, ns, ATT_LOGOID);
 		return logoId;
-	}
-	
-	private double leerMinPrecio(XmlPullParser parser) throws IOException, XmlPullParserException {
-		parser.require(XmlPullParser.START_TAG, ns, ATT_MINPRECIO);
-		double minPrecio = Double.parseDouble(readText(parser));
-		parser.require(XmlPullParser.END_TAG, ns, ATT_MINPRECIO);
-		return minPrecio;
-	}
-	
-	private double leerMaxPrecio(XmlPullParser parser) throws IOException, XmlPullParserException {
-		parser.require(XmlPullParser.START_TAG, ns, ATT_MAXPRECIO);
-		double maxPrecio = Double.parseDouble(readText(parser));
-		parser.require(XmlPullParser.END_TAG, ns, ATT_MAXPRECIO);
-		return maxPrecio;
-	}
+	}	
 	
 	private char leerDisponibilidad(XmlPullParser parser) throws IOException, XmlPullParserException {
 		parser.require(XmlPullParser.START_TAG, ns, ATT_DISPONIBILIDAD);
@@ -161,9 +132,7 @@ public class ParserColon {
 		parser.require(XmlPullParser.END_TAG, ns, ATT_DISPONIBILIDAD);
 		return asientosLibres;
 	}
-	
-	
-	
+		
 	//Aca estoy levantando texto del atributo pedido.
 	private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
 		String resultado = "";

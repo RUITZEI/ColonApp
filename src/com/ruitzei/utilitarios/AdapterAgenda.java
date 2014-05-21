@@ -18,13 +18,13 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.ruitzei.z_zteatro.R;
 
-public class AdaptadorAgenda2 extends ArrayAdapter<Object> implements Filterable{
+public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	Context contexto;
 	private List<ItemAgenda> noticias;
 	private ImageLoader mImageLoader;
 	private List<ItemAgenda> noticiasFiltradas;	
 	
-	public AdaptadorAgenda2 (Context contexto, List<ItemAgenda> noticias){
+	public AdapterAgenda (Context contexto, List<ItemAgenda> noticias){
 		super(contexto, R.layout.item_agenda_2);
 		this.contexto = contexto;
 		this.noticias  = noticias;

@@ -40,17 +40,15 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.ruitzei.utilitarios.AdaptadorAgenda;
-import com.ruitzei.utilitarios.AdaptadorAgenda2;
+import com.ruitzei.utilitarios.AdapterAgenda;
 import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.utilitarios.ParserColon;
-import com.ruitzei.utilitarios.RssParser;
 
 public class FragmentAgenda extends ListFragment implements OnNavigationListener {	
 	//Necesito la referencia a la vista para poder llamar a los botones que tenga.
 	private View view;
 	
-	private AdaptadorAgenda2 adapterNoticias;
+	private AdapterAgenda adapterNoticias;
 	private MainActivity actividadPrincipal;
 	private ListView lista;
 	private SearchView searchView;
@@ -103,7 +101,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 
 
 	public void mostrarLista(){		
-		adapterNoticias = new AdaptadorAgenda2(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
+		adapterNoticias = new AdapterAgenda(getActivity().getApplicationContext(),actividadPrincipal.getNoticias());		
 	    lista.setAdapter(adapterNoticias);
 	   
 	    agregarListenerLista();

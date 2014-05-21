@@ -1,9 +1,17 @@
 package com.ruitzei.z_zteatro;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
@@ -23,7 +31,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ruitzei.utilitarios.ItemAgenda;
-import com.ruitzei.utilitarios.NoticiaOle;
+
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
 
@@ -123,7 +131,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 				.commit();
 				break;
 			case R.id.btn_programa:
-				Bundle args = new Bundle();
+				/*Bundle args = new Bundle();
 				args.putString("link", "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf");
 				fragment = new FragmentWeb();
 				fragment.setArguments(args);
@@ -132,7 +140,11 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 				fragmentManager.beginTransaction()
 				.replace(R.id.container, fragment)
 				.addToBackStack("FragBack")
-				.commit();
+				.commit();*/
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf"));
+				startActivity(browserIntent);
+				
+				//((MainActivity)getActivity()).downloadPdfContent("https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf");
 				break;
 			default:
 				break;
@@ -211,4 +223,39 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			getSupportActionBar().hide();
 		}
 	}	
+	
+	public void downloadPdfContent(String urlToDownload){
+
+        try {
+
+            String fileName="xyz";
+        String fileExtension=".pdf";
+
+//      download pdf file.
+
+           URL url = new URL(urlToDownload);
+           HttpURLConnection c = (HttpURLConnection) url.openConnection();
+           c.setRequestMethod("GET");
+           c.setDoOutput(true);
+           c.connect();
+           String PATH = Environment.getExternalStorageDirectory() + "/mydownloads/";
+           File file = new File(PATH);
+           file.mkdirs();
+           File outputFile = new File(file, fileName+fileExtension);
+           FileOutputStream fos = new FileOutputStream(outputFile);
+           InputStream is = c.getInputStream();
+           byte[] buffer = new byte[1024];
+           int len1 = 0;
+           while ((len1 = is.read(buffer)) != -1) {
+               fos.write(buffer, 0, len1);
+           }
+           fos.close();
+           is.close();
+
+          System.out.println("--pdf downloaded--ok--"+urlToDownload);
+       } catch (Exception e) {
+           e.printStackTrace();
+
+       }
+}
 }

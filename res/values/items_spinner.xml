@@ -2,13 +2,13 @@
 <resources>
     <string-array name = "items_spinner"> 
     	<item>VER TODOS</item>
+    	<item>VISITAS GUIADAS</item>
     	<item>OPERA</item>
     	<item>BALLET</item>
-    	<item>CONCIERTO</item>
+    	<item>GRAN ABONO</item>
     	<item>ABONO ESTELAR</item>
 		<item>ABONO VESPERTINO</item>
-    	<item>ABONO NOCTURNO</item>   
-    	<item>GRAN ABONO</item>
+    	<item>ABONO NOCTURNO</item>   	
 	</string-array>
     
 </resources>

@@ -17,7 +17,8 @@
         android:theme="@style/Theme.Example" >
         <activity
             android:name="com.ruitzei.z_zteatro.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="nosensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
