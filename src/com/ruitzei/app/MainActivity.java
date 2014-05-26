@@ -1,18 +1,30 @@
 package com.ruitzei.app;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -21,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,6 +47,8 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	private List<ItemAgenda> noticias;
 	private ArrayAdapter<CharSequence> adapterSpinner;
 	private static final String LINK_PROGRAMA = "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf";
+	private static final int NOTIF_ALERTA_ID = 1;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,8 +153,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			
 			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(LINK_PROGRAMA));
-					startActivity(browserIntent);
+					((MainActivity)getActivity()).new DescargarPdf("programa").execute(LINK_PROGRAMA);
 				}
 			       });			
 			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -216,5 +230,142 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	        return true;
 	    }
 	    return false;
+	}
+	
+	private class DescargarPdf extends AsyncTask<String, Integer, String>{
+		private String urlToDownload;
+		private String fileName;
+		private NotificationCompat.Builder mBuilder;
+		private NotificationManager mNotificationManager;
+		
+		public DescargarPdf(String fileName){
+			this.fileName = fileName;
+		}
+		
+		@Override
+		protected void onPreExecute(){
+			super.onPreExecute();
+			System.out.println("antes");
+			mBuilder = new NotificationCompat.Builder(getApplication())
+			.setTicker("Iniciando descarga")
+			//.setSmallIcon(android.R.drawable.stat_sys_warning)
+			.setSmallIcon(R.drawable.ic_launcher)
+			.setLargeIcon((((BitmapDrawable)getResources()
+					.getDrawable(R.drawable.ic_launcher)).getBitmap()))
+			.setContentTitle("Descargando...")
+			.setContentText("Descarga en proceso.")
+			//.setContentInfo("4")
+			.setProgress(0, 0, true);
+			 
+			Intent intent = new Intent();
+			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+			mBuilder.setContentIntent(pendingIntent);
+			
+			mNotificationManager =
+				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
+		}
+
+		@Override
+		protected String doInBackground(String... params){
+			try {
+				return cargarPdfDeInternet(params[0]);
+			} catch (IOException e) {
+				return "error";
+			}
+		}
+		
+		private String cargarPdfDeInternet(String params) throws IOException{
+			FileOutputStream fos = null;
+			InputStream is = null;
+			try {
+				String fileExtension=".pdf";
+	 
+				System.out.println("durante");
+				URL url = new URL(params);
+	            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+	            c.setReadTimeout(100000);
+	            c.setConnectTimeout(15000);
+	            c.setRequestMethod("GET");
+	            c.setDoOutput(true);
+	            c.connect();
+	            String PATH = Environment.getExternalStorageDirectory() + "/download/";
+	            File file = new File(PATH);
+	            file.mkdirs();
+	            File outputFile = new File(file, fileName+fileExtension);
+	            fos = new FileOutputStream(outputFile);
+	            is = c.getInputStream();
+	            byte[] buffer = new byte[1024];
+	            int len1 = 0;
+	            while ((len1 = is.read(buffer)) != -1) {
+	                fos.write(buffer, 0, len1);
+	            }	 
+	           System.out.println("--pdf downloaded--ok--" + urlToDownload);
+	        } finally{
+	        	if (is != null ){
+		            fos.close();
+		            is.close();
+	        	}
+	        }
+			return "sucess";			
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress){
+			super.onProgressUpdate(progress);
+			//mBuilder.setProgress(100, progress[0], false);
+			//mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
+		}
+		
+		/*
+		 * Cuando termina la descarga, borro la notificacion anterior y creo otra
+		 * tal que al clickearla, me abra directamente el archivo.
+		 */
+		@Override
+		protected void onPostExecute(String result){
+			super.onPostExecute(result);
+			mBuilder.setProgress(0, 0, false);
+			mNotificationManager.cancel(NOTIF_ALERTA_ID);
+			
+			//mBuilder = new NotificationCompat.Builder(getApplication()); 
+
+			if (result.equalsIgnoreCase("sucess")){
+			    File file = new File(Environment.getExternalStorageDirectory() + "/download/"+fileName+".pdf");
+			    MimeTypeMap map = MimeTypeMap.getSingleton();
+			    String ext = MimeTypeMap.getFileExtensionFromUrl(file.getName());
+			    String type = map.getMimeTypeFromExtension(ext);
+	
+			    if (type == null)
+			        type = "*/*";
+			    Intent intent = new Intent(Intent.ACTION_VIEW);
+			    Uri data = Uri.fromFile(file);
+	
+			    intent.setDataAndType(data, type);
+			    
+			    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);    
+			    
+				System.out.println("despues");
+				mBuilder.setTicker("Descarga completa")
+				.setContentTitle("Descarga completa")
+				.setContentText("Seleccione para abrir.")
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setLargeIcon((((BitmapDrawable)getResources()
+						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
+				.setAutoCancel(true)			
+				.setContentIntent(pendingIntent);
+				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
+			} else {
+				mBuilder.setTicker("Error en la descarga")
+				.setContentTitle("Error en la descarga")
+				.setContentText("Hubo un error en la descarga, intente nuevamente")
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setLargeIcon((((BitmapDrawable)getResources()
+						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
+				.setAutoCancel(true);			
+				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
+				
+			}
+		}
 	}
 }
