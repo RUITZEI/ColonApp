@@ -1,52 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false"
     android:layout_width="match_parent"
-    android:id="@+id/layout"
-    android:layout_height="wrap_content"    
-    android:paddingBottom="4dp">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    
+   <RelativeLayout 
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_weight="2">
+        		
+            <com.android.volley.toolbox.NetworkImageView
+		        android:id="@+id/item_foto"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:scaleType="centerCrop"
+		        android:src="@drawable/ic_launcher"/>
+            
+			<ImageView
+		        android:id="@+id/degrade"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:scaleType="fitEnd"
+		        android:src="@drawable/degrade"/>
+            
+            <ImageView
+                android:id="@+id/disponibilidad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:paddingTop="4dp"
+                android:paddingBottom="6dp"
+                android:paddingRight="8dp"
+                android:src="@drawable/availability_excellent" />
 
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/imageView1"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/textView1"
-        android:src="@drawable/ic_launcher" />
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:textSize="14sp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toLeftOf="@+id/disponibilidad"
+                android:textColor="@color/gris_opaco_low"
+                android:paddingRight="8dp"
+                android:paddingBottom="4dp"
+                android:text="Disp:"
+                 />
+        
+    </RelativeLayout>
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_weight="5"
+        android:paddingLeft="8dp">
+       		<TextView 
+                android:id="@+id/item_fecha"
+                android:textSize="14sp"
+               	android:textStyle="italic"
+                android:textColor="@color/gris_opaco"
+                android:text="25 de Mayo del 2003"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                />
+       		
+            <TextView
+                android:id="@+id/item_nombre"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#f0f0f0"
+                android:text="Nombre"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/item_fecha">
+            </TextView>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/textView2"
-        android:layout_toRightOf="@+id/imageView1"
-        android:paddingLeft="5dp"
-        android:text="Caligula"
-        android:textColor="#000000"
-       	android:textStyle="bold"
-        android:textSize="22sp" />
-
-    <TextView
-        android:paddingLeft="5dp"
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageView1"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView1"
-        android:layout_toRightOf="@+id/imageView1"
-        android:textSize="14sp"
-        android:textColor="#000000"
-        android:text="TextView" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-</RelativeLayout>
+            <TextView
+                android:id="@+id/item_tipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/item_nombre"
+                android:text="Descripcion"
+                android:textColor="@color/gris_opaco_low"
+                android:textSize="14sp" />      
+    </RelativeLayout>
+</LinearLayout>

@@ -1,8 +1,8 @@
 package com.ruitzei.utilitarios;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
-import java.util.Locale;
 
 import android.content.Context;
 import android.view.View;
@@ -22,14 +22,25 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	private List<ItemAgenda> noticias;
 	private ImageLoader mImageLoader;
 	private List<ItemAgenda> noticiasFiltradas;	
+	private Hashtable<Character, Integer> tablaDisponibilidad;
 	
 	public AdapterAgenda (Context contexto, List<ItemAgenda> noticias){
-		super(contexto, R.layout.item_agenda_2);
+		super(contexto, R.layout.item_agenda);
 		this.contexto = contexto;
 		this.noticias  = noticias;
 		this.noticiasFiltradas = this.noticias;
+		inicializarTabla();
 	}
 	
+
+	private void inicializarTabla() {
+		tablaDisponibilidad = new Hashtable<Character, Integer>();
+		tablaDisponibilidad.put('E', R.drawable.availability_excellent);
+		tablaDisponibilidad.put('G', R.drawable.availability_good);
+		tablaDisponibilidad.put('L', R.drawable.availability_limited);
+		tablaDisponibilidad.put('S', R.drawable.availability_sold_out);		
+	}
+
 
 	@Override
 	public int getCount(){
@@ -51,10 +62,10 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 		
 		public static PlaceHolder generate (View convertView){
 			PlaceHolder placeHolder = new PlaceHolder();
-			placeHolder.nombre = (TextView)convertView.findViewById(R.id.textView1);
-			placeHolder.tipo = (TextView)convertView.findViewById(R.id.textView2);
-			placeHolder.fecha = (TextView)convertView.findViewById(R.id.textView3);
-			placeHolder.foto=(NetworkImageView)convertView.findViewById(R.id.imageView1);
+			placeHolder.nombre = (TextView)convertView.findViewById(R.id.item_nombre);
+			placeHolder.tipo = (TextView)convertView.findViewById(R.id.item_tipo);
+			placeHolder.fecha = (TextView)convertView.findViewById(R.id.item_fecha);
+			placeHolder.foto=(NetworkImageView)convertView.findViewById(R.id.item_foto);
 			placeHolder.disponibilidad = (ImageView)convertView.findViewById(R.id.disponibilidad);
 			
 			return placeHolder;			
@@ -64,7 +75,7 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	public View getView(int position, View convertView, ViewGroup parent){
 		PlaceHolder placeHolder;
 		if (convertView == null){
-			convertView = View.inflate(contexto,R.layout.item_agenda_2 ,null);
+			convertView = View.inflate(contexto,R.layout.item_agenda ,null);
 			placeHolder = PlaceHolder.generate(convertView);
 			convertView.setTag(placeHolder);
 		} else {
@@ -74,29 +85,12 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 		//Obteniendo instancia del volley.
 		mImageLoader = VolleySingleton.getInstance().getImageLoader();
 		
-		//
-		placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
+		//placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
+		placeHolder.foto.setImageUrl("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA",mImageLoader);
 		placeHolder.tipo.setText(noticiasFiltradas.get(position).getTipo());
 		placeHolder.nombre.setText(noticiasFiltradas.get(position).getNombre());
 		placeHolder.fecha.setText(noticiasFiltradas.get(position).getFecha());
-		
-		//Poniendo el icono segun corresponda.
-		switch (noticiasFiltradas.get(position).getDisponibilidad()) {
-		case 'E':
-			placeHolder.disponibilidad.setImageResource(R.drawable.availability_excellent);			
-			break;
-		case 'G':
-			placeHolder.disponibilidad.setImageResource(R.drawable.availability_good);
-			break;
-		case 'L':
-			placeHolder.disponibilidad.setImageResource(R.drawable.availability_limited);
-			break;
-		case 'S':
-			placeHolder.disponibilidad.setImageResource(R.drawable.availability_sold_out);
-			break;
-		default:
-			break;
-		}
+		placeHolder.disponibilidad.setImageResource(tablaDisponibilidad.get(noticiasFiltradas.get(position).getDisponibilidad()));
 		
 		//Fondo Gris o negro segun corresponda.
 		if (position % 2 == 0){
