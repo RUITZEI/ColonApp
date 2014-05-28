@@ -8,7 +8,8 @@
     <string name="action_back">Back</string>
     <string name="fragment_web">Comprar</string>
     <string name="btn_programa">Descargar Programa</string>
-    <string name="btn_agenda">Ver Agenda</string>
+    <string name="btn_temporada">Temporada 2014</string>
+    <string name="btn_agenda">Cartelera</string>
     <string name="msg_nointernet_agenda">Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar.</string>
     <string name="msg_loading">Cargando...</string>
     <string name="msg_no_seats_available">Este evento no posee asientos disponibles.</string>

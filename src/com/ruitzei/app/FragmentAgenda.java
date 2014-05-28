@@ -267,7 +267,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	public void onResume(){
 		super.onResume();
 		agregarListenerLista();
-		actividadPrincipal.getSupportActionBar().setTitle("Agenda");
+		actividadPrincipal.getSupportActionBar().setTitle(R.string.btn_agenda);
 		actividadPrincipal.getSupportActionBar().setDisplayShowHomeEnabled(true);
 		actividadPrincipal.getSupportActionBar().setIcon(android.R.color.transparent);
 		

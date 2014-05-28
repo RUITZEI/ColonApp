@@ -86,11 +86,25 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 		mImageLoader = VolleySingleton.getInstance().getImageLoader();
 		
 		//placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
-		placeHolder.foto.setImageUrl("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA",mImageLoader);
+		//placeHolder.foto.setImageUrl("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA",mImageLoader);
 		placeHolder.tipo.setText(noticiasFiltradas.get(position).getTipo());
 		placeHolder.nombre.setText(noticiasFiltradas.get(position).getNombre());
 		placeHolder.fecha.setText(noticiasFiltradas.get(position).getFecha());
 		placeHolder.disponibilidad.setImageResource(tablaDisponibilidad.get(noticiasFiltradas.get(position).getDisponibilidad()));
+		
+		String tipo = noticiasFiltradas.get(position).getNombre().toLowerCase();
+		placeHolder.foto.setDefaultImageResId(R.drawable .ic_launcher);
+		//System.out.println(tipo);
+		if (tipo.contains("ballet")){
+			//placeHolder.foto.setDefaultImageResId(R.drawable.ballet);
+			placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
+		} else if (tipo.contains("opera")){
+			//placeHolder.foto.setDefaultImageResId(R.drawable.opera);
+			placeHolder.foto.setImageUrl("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA",mImageLoader);
+		} else if (tipo.contains("filarmonica")){
+			//placeHolder.foto.setDefaultImageResId(R.drawable.filarmonica);
+			placeHolder.foto.setImageUrl("http://www.teatrocolon.org.ar/images/colon_contemporaneo/vendedora_de_fosforos_list.jpg",mImageLoader);
+		}
 		
 		//Fondo Gris o negro segun corresponda.
 		if (position % 2 == 0){
