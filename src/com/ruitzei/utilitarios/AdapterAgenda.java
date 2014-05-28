@@ -93,6 +93,7 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 		placeHolder.disponibilidad.setImageResource(tablaDisponibilidad.get(noticiasFiltradas.get(position).getDisponibilidad()));
 		
 		String tipo = noticiasFiltradas.get(position).getNombre().toLowerCase();
+		placeHolder.foto.setErrorImageResId(R.drawable.ic_launcher);
 		placeHolder.foto.setDefaultImageResId(R.drawable .ic_launcher);
 		//System.out.println(tipo);
 		if (tipo.contains("ballet")){
