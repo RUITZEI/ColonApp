@@ -23,6 +23,10 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	private ImageLoader mImageLoader;
 	private List<ItemAgenda> noticiasFiltradas;	
 	private Hashtable<Character, Integer> tablaDisponibilidad;
+	private static final String URL_BALLET = "http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg";
+	private static final String URL_OPERA = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA";
+	private static final String URL_FILARMONICA = "http://www.teatrocolon.org.ar/images/colon_contemporaneo/vendedora_de_fosforos_list.jpg";
+	private static final String URL_DEFAULT = "http://du4zwgdg3nwxa.cloudfront.net/logotipos/t/te/teatro-colon-buenos-aires-logo-1331322641.jpg";
 	
 	public AdapterAgenda (Context contexto, List<ItemAgenda> noticias){
 		super(contexto, R.layout.item_agenda);
@@ -93,19 +97,7 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 		placeHolder.disponibilidad.setImageResource(tablaDisponibilidad.get(noticiasFiltradas.get(position).getDisponibilidad()));
 		
 		String tipo = noticiasFiltradas.get(position).getNombre().toLowerCase();
-		placeHolder.foto.setErrorImageResId(R.drawable.ic_launcher);
-		placeHolder.foto.setDefaultImageResId(R.drawable .ic_launcher);
-		//System.out.println(tipo);
-		if (tipo.contains("ballet")){
-			//placeHolder.foto.setDefaultImageResId(R.drawable.ballet);
-			placeHolder.foto.setImageUrl("http://3.bp.blogspot.com/-R_7qdxVpSIg/UTtjWiBNO-I/AAAAAAAABCE/MTX-FUb4LTY/s1600/ballet-el-lago-de-los-cisnes%5B1%5D.jpg",mImageLoader);
-		} else if (tipo.contains("opera")){
-			//placeHolder.foto.setDefaultImageResId(R.drawable.opera);
-			placeHolder.foto.setImageUrl("https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA",mImageLoader);
-		} else if (tipo.contains("filarmonica")){
-			//placeHolder.foto.setDefaultImageResId(R.drawable.filarmonica);
-			placeHolder.foto.setImageUrl("http://www.teatrocolon.org.ar/images/colon_contemporaneo/vendedora_de_fosforos_list.jpg",mImageLoader);
-		}
+		setFoto(placeHolder, noticiasFiltradas.get(position).getLogoId(), tipo);
 		
 		//Fondo Gris o negro segun corresponda.
 		if (position % 2 == 0){
@@ -118,6 +110,30 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	}
 	
 	
+	private void setFoto(PlaceHolder placeHolder, String link, String tipo) {
+		if (link.length() == 0){
+			System.out.println("0 long");
+			if (tipo.contains("ballet")){
+				placeHolder.foto.setImageUrl(URL_BALLET,mImageLoader);
+			} else if (tipo.contains("opera")){
+				placeHolder.foto.setImageUrl(URL_OPERA ,mImageLoader);
+			} else if (tipo.contains("filarmonica")){
+				placeHolder.foto.setImageUrl( URL_FILARMONICA ,mImageLoader);
+			}else{
+				//Cargo un link inválido ?
+				placeHolder.foto.setImageUrl(URL_DEFAULT ,mImageLoader);
+			}			
+		}else {
+			placeHolder.foto.setImageUrl(link, mImageLoader);
+		}
+		
+		placeHolder.foto.setErrorImageResId(R.drawable.default_logo);
+		placeHolder.foto.setDefaultImageResId(R.drawable .default_logo);
+
+		
+	}
+
+
 	/**
 	 * Cada vez que se le pasa un filtro, se recorre toda la lista de noticias
 	 * buscando aquellas que cumplan con la condicion de filtro (contienen tal string)

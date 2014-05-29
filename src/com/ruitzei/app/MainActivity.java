@@ -46,9 +46,9 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 
 	private List<ItemAgenda> noticias;
 	private ArrayAdapter<CharSequence> adapterSpinner;
-	private static final String LINK_PROGRAMA = "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf";
+	private static final String URL_PROGRAMA = "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf";
+	private static final String URL_TEMPORADA ="";
 	private static final int NOTIF_ALERTA_ID = 1;
-
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +110,11 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			
 			Button botonPrograma = (Button)rootView.findViewById(R.id.btn_programa);
 			botonPrograma.setOnClickListener(this);
+			
+			Button botonTemporada = (Button)rootView.findViewById(R.id.btn_temporada);
+			botonTemporada.setOnClickListener(this);
+			
+			
 			return rootView;
 		}
 		
@@ -136,24 +141,30 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 				.addToBackStack("FragBack")
 				.commit();
 				break;
-			case R.id.btn_programa:	
-				
+			case R.id.btn_programa:					
 				if (((MainActivity)getActivity()).tieneConexionInternet() ){
-					confirmarDescarga();
+					confirmarDescarga("programa", URL_PROGRAMA);
 				}else{
 					Toast.makeText(getActivity(), R.string.msg_nointernet_programa, Toast.LENGTH_LONG).show();
 				}				
+				break;
+			case R.id.btn_temporada:
+				if (((MainActivity)getActivity()).tieneConexionInternet() ){
+					confirmarDescarga("Teatro_Colon_Temporada_2014", URL_PROGRAMA);
+				}else{
+					Toast.makeText(getActivity(), R.string.msg_nointernet_programa, Toast.LENGTH_LONG).show();
+				}	
 				break;
 			default:
 				break;
 			}
 		}
-		private void confirmarDescarga(){
+		private void confirmarDescarga(final String nombreArchivo, final String linkArchivo){
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 			
 			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					((MainActivity)getActivity()).new DescargarPdf("programa").execute(LINK_PROGRAMA);
+					((MainActivity)getActivity()).new DescargarPdf(nombreArchivo).execute(linkArchivo);
 				}
 			       });			
 			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -351,18 +362,22 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 				.setContentText("Seleccione para abrir.")
 				.setSmallIcon(R.drawable.ic_launcher)
 				.setLargeIcon((((BitmapDrawable)getResources()
-						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
+						.getDrawable(R.drawable.default_logo)).getBitmap()))
 				.setAutoCancel(true)			
 				.setContentIntent(pendingIntent);
 				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
 			} else {
+				File file = new File(Environment.getExternalStorageDirectory() + "/download/"+fileName+".pdf");
+				file.delete();
 				mBuilder.setTicker("Error en la descarga")
 				.setContentTitle("Error en la descarga")
 				.setContentText("Hubo un error en la descarga, intente nuevamente")
 				.setSmallIcon(R.drawable.ic_launcher)
 				.setLargeIcon((((BitmapDrawable)getResources()
 						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
-				.setAutoCancel(true);			
+				.setAutoCancel(true);	
+				
+				
 				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
 				
 			}
