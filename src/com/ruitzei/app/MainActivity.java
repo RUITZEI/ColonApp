@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import android.R.anim;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -256,18 +257,15 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		@Override
 		protected void onPreExecute(){
 			super.onPreExecute();
-			System.out.println("antes");
 			mBuilder = new NotificationCompat.Builder(getApplication())
-			.setTicker("Iniciando descarga")
-			//.setSmallIcon(android.R.drawable.stat_sys_warning)
-			.setSmallIcon(R.drawable.ic_launcher)
+			.setTicker(getResources().getString(R.string.msg_download_starting))
+			.setSmallIcon(android.R.drawable.stat_sys_download)
 			.setLargeIcon((((BitmapDrawable)getResources()
 					.getDrawable(R.drawable.ic_launcher)).getBitmap()))
-			.setContentTitle("Descargando...")
-			.setContentText("Descarga en proceso.")
-			//.setContentInfo("4")
-			.setProgress(0, 0, true);
-			 
+			.setContentTitle(getResources().getString(R.string.msg_downloading))
+			.setContentText(getResources().getString(R.string.msg_download_in_progress))
+			.setProgress(100, 0, false);
+
 			Intent intent = new Intent();
 			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
 			mBuilder.setContentIntent(pendingIntent);
@@ -293,13 +291,14 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			try {
 				String fileExtension=".pdf";
 	 
-				System.out.println("durante");
 				URL url = new URL(params);
 	            HttpURLConnection c = (HttpURLConnection) url.openConnection();
 	            c.setReadTimeout(100000);
 	            c.setConnectTimeout(15000);
 	            c.setRequestMethod("GET");
 	            c.setDoOutput(true);
+                int lenghtOfFile = c.getContentLength();
+
 	            c.connect();
 	            String PATH = Environment.getExternalStorageDirectory() + "/download/";
 	            File file = new File(PATH);
@@ -309,10 +308,12 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	            is = c.getInputStream();
 	            byte[] buffer = new byte[1024];
 	            int len1 = 0;
+	            int total = 0;
 	            while ((len1 = is.read(buffer)) != -1) {
+	            	total += len1;
+	            	publishProgress((int)((total*100)/lenghtOfFile));
 	                fos.write(buffer, 0, len1);
 	            }	 
-	           System.out.println("--pdf downloaded--ok--" + urlToDownload);
 	        } finally{
 	        	if (is != null ){
 		            fos.close();
@@ -322,11 +323,11 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			return "sucess";			
 		}
 
+		//Muestro el progreso en la barrita
 		@Override
 		protected void onProgressUpdate(Integer... progress){
 			super.onProgressUpdate(progress);
-			//mBuilder.setProgress(100, progress[0], false);
-			//mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
+			mBuilder.setProgress(100, progress[0], false);
 		}
 		
 		/*
@@ -356,25 +357,24 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			    
 			    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);    
 			    
-				System.out.println("despues");
-				mBuilder.setTicker("Descarga completa")
-				.setContentTitle("Descarga completa")
-				.setContentText("Seleccione para abrir.")
-				.setSmallIcon(R.drawable.ic_launcher)
+				mBuilder.setTicker(getResources().getString(R.string.msg_download_complete))
+				.setContentTitle(getResources().getString(R.string.msg_download_complete))
+				.setContentText(getResources().getString(R.string.msg_download_open))
+				.setSmallIcon(android.R.drawable.stat_sys_download_done)
 				.setLargeIcon((((BitmapDrawable)getResources()
-						.getDrawable(R.drawable.default_logo)).getBitmap()))
+						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
 				.setAutoCancel(true)			
 				.setContentIntent(pendingIntent);
 				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
 			} else {
 				File file = new File(Environment.getExternalStorageDirectory() + "/download/"+fileName+".pdf");
 				file.delete();
-				mBuilder.setTicker("Error en la descarga")
-				.setContentTitle("Error en la descarga")
-				.setContentText("Hubo un error en la descarga, intente nuevamente")
-				.setSmallIcon(R.drawable.ic_launcher)
+				mBuilder.setTicker(getResources().getString(R.string.msg_download_error))
+				.setContentTitle(getResources().getString(R.string.msg_download_error))
+				.setContentText(getResources().getString(R.string.msg_download_error_long))
+				.setSmallIcon(android.R.drawable.stat_sys_warning)
 				.setLargeIcon((((BitmapDrawable)getResources()
-						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
+						.getDrawable(R.drawable.ic_launcher)).getBitmap()))						
 				.setAutoCancel(true);	
 				
 				

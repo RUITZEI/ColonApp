@@ -15,8 +15,16 @@
     <string name="msg_no_seats_available">Este evento no posee asientos disponibles.</string>
     <string name="msg_nointernet_programa">No está conectado a internet.</string>
     <string name="msg_download_started">Descarga iniciada</string>
+    <string name="msg_download_starting">Iniciando descarga</string>
+    <string name="msg_download_in_progress">Descarga en proceso.</string>
+    <string name="msg_downloading">Descargando...</string>
+    <string name="msg_download_complete">Descarga completa</string>
+    <string name="msg_download_open">Seleccione para abrir.</string>
+    <string name="msg_download_error">Error en la descarga</string>
+    <string name="msg_download_error_long">Hubo un error en la descarga, intente nuevamente</string>
     <string name="alert_download">Comenzar descarga?</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
+    
 
 </resources>

@@ -27,6 +27,7 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	private static final String URL_OPERA = "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRyiXI4PEL4lr725Bldtawz9VJLVU1b7ayzgqFktV8dfLHlG8uRhh2JMA";
 	private static final String URL_FILARMONICA = "http://www.teatrocolon.org.ar/images/colon_contemporaneo/vendedora_de_fosforos_list.jpg";
 	private static final String URL_DEFAULT = "http://du4zwgdg3nwxa.cloudfront.net/logotipos/t/te/teatro-colon-buenos-aires-logo-1331322641.jpg";
+	//private static final String URL_DEFAULT = "http://enriquearturodiemecke.net/home/images/Logo_Col%C3%B3n_Alta_-_Negro.jpg";
 	
 	public AdapterAgenda (Context contexto, List<ItemAgenda> noticias){
 		super(contexto, R.layout.item_agenda);
@@ -112,7 +113,6 @@ public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	
 	private void setFoto(PlaceHolder placeHolder, String link, String tipo) {
 		if (link.length() == 0){
-			System.out.println("0 long");
 			if (tipo.contains("ballet")){
 				placeHolder.foto.setImageUrl(URL_BALLET,mImageLoader);
 			} else if (tipo.contains("opera")){
