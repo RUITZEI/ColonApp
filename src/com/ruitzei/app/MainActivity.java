@@ -1,31 +1,16 @@
 package com.ruitzei.app;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
-import android.R.anim;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
@@ -34,11 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ruitzei.utilitarios.DescargarPdf;
 import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.z_zteatro.R;
 
@@ -49,7 +34,6 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	private ArrayAdapter<CharSequence> adapterSpinner;
 	private static final String URL_PROGRAMA = "https://www.tuentrada.com/Articlemedia/Images/Brands/Colon/prog_colon_2014.pdf";
 	private static final String URL_TEMPORADA ="";
-	private static final int NOTIF_ALERTA_ID = 1;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,14 +91,11 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 			 * En este caso serian todos los botones del menu principal.
 			 */
 			Button botonCargar = (Button)rootView.findViewById(R.id.btn_agenda);
-			botonCargar.setOnClickListener(this);
-			
+			botonCargar.setOnClickListener(this);			
 			Button botonPrograma = (Button)rootView.findViewById(R.id.btn_programa);
-			botonPrograma.setOnClickListener(this);
-			
+			botonPrograma.setOnClickListener(this);			
 			Button botonTemporada = (Button)rootView.findViewById(R.id.btn_temporada);
 			botonTemporada.setOnClickListener(this);
-			
 			
 			return rootView;
 		}
@@ -132,9 +113,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		public void onClick(View v){
 			switch (v.getId()) {
 			case R.id.btn_agenda:
-				
 				Fragment fragment = new FragmentAgenda();
-				
 				FragmentManager fragmentManager = ((MainActivity)getActivity()).getSupportFragmentManager();
 				fragmentManager.popBackStack();
 				fragmentManager.beginTransaction()
@@ -142,48 +121,50 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 				.addToBackStack("FragBack")
 				.commit();
 				break;
+				
 			case R.id.btn_programa:					
-				if (((MainActivity)getActivity()).tieneConexionInternet() ){
-					confirmarDescarga("programa", URL_PROGRAMA);
-				}else{
-					Toast.makeText(getActivity(), R.string.msg_nointernet_programa, Toast.LENGTH_LONG).show();
-				}				
+				confirmarDescarga("programa", URL_PROGRAMA);
 				break;
+				
 			case R.id.btn_temporada:
-				if (((MainActivity)getActivity()).tieneConexionInternet() ){
-					confirmarDescarga("Teatro_Colon_Temporada_2014", URL_PROGRAMA);
-				}else{
-					Toast.makeText(getActivity(), R.string.msg_nointernet_programa, Toast.LENGTH_LONG).show();
-				}	
+				confirmarDescarga("Teatro_Colon_Temporada_2014", URL_PROGRAMA);
 				break;
+				
 			default:
 				break;
 			}
 		}
+		
+		/*
+		 * Se abre el mensaje de Dialogo para que el usuario confirme la descarga.
+		 * Siempre y cuando tenga acceso a Internet
+		 */
 		private void confirmarDescarga(final String nombreArchivo, final String linkArchivo){
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			
-			builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					((MainActivity)getActivity()).new DescargarPdf(nombreArchivo).execute(linkArchivo);
-				}
-			       });			
-			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-			           }
-			       });
-			builder.setMessage(R.string.alert_download);
-			
-			AlertDialog dialog = builder.show();
+			if (((MainActivity)getActivity()).tieneConexionInternet()){
+				AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+				
+				builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						new DescargarPdf(nombreArchivo,getActivity()).execute(linkArchivo);
+					}
+				       });			
+				builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				        	   //No hago nada si el usuario apretó cancelar
+				           }
+				       });
+				builder.setMessage(R.string.alert_download);				
+				AlertDialog dialog = builder.show();
+			}else{
+				Toast.makeText(getActivity(), R.string.msg_nointernet_programa, Toast.LENGTH_LONG).show();
+			}
 		}
 	}
-	
 	
 	@Override
 	public void onBackStackChanged() {
 	    shouldDisplayHomeUp();		
-	}
-	
+	}	
 	
 	/**
 	 * Cada vez que se invoca un fragment, la BackStackEntry count se incrementa
@@ -198,7 +179,7 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	
 	@Override
 	public boolean onSupportNavigateUp() {
-	    //Cuando toca la flechita para arriba, vuelve al main fragment.
+	    //Cuando toca la flechita para arriba, vuelve al fragment anterior.
 	    getSupportFragmentManager().popBackStack();
 	    return true;
 	}		
@@ -208,14 +189,12 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	 */
 	public List<ItemAgenda> getNoticias(){
 		return this.noticias;		
-	}
-	
+	}	
 	
 	//Si devuelve true es porque hubo un problema en la descarga.
 	public boolean existenNoticias(){
 		return !(this.noticias == null);
-	}
-	
+	}	
 	
 	//Setear las noticias por si las consegui desde la agenda misma o de donde fuera.
 	public void setNoticias (List<ItemAgenda> noticias){
@@ -242,145 +221,5 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 	        return true;
 	    }
 	    return false;
-	}
-	
-	private class DescargarPdf extends AsyncTask<String, Integer, String>{
-		private String urlToDownload;
-		private String fileName;
-		private NotificationCompat.Builder mBuilder;
-		private NotificationManager mNotificationManager;
-		
-		public DescargarPdf(String fileName){
-			this.fileName = fileName;
-		}
-		
-		@Override
-		protected void onPreExecute(){
-			super.onPreExecute();
-			mBuilder = new NotificationCompat.Builder(getApplication())
-			.setTicker(getResources().getString(R.string.msg_download_starting))
-			.setSmallIcon(android.R.drawable.stat_sys_download)
-			.setLargeIcon((((BitmapDrawable)getResources()
-					.getDrawable(R.drawable.ic_launcher)).getBitmap()))
-			.setContentTitle(getResources().getString(R.string.msg_downloading))
-			.setContentText(getResources().getString(R.string.msg_download_in_progress))
-			.setProgress(100, 0, false);
-
-			Intent intent = new Intent();
-			PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
-			mBuilder.setContentIntent(pendingIntent);
-			
-			mNotificationManager =
-				    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
-		}
-
-		@Override
-		protected String doInBackground(String... params){
-			try {
-				return cargarPdfDeInternet(params[0]);
-			} catch (IOException e) {
-				return "error";
-			}
-		}
-		
-		private String cargarPdfDeInternet(String params) throws IOException{
-			FileOutputStream fos = null;
-			InputStream is = null;
-			try {
-				String fileExtension=".pdf";
-	 
-				URL url = new URL(params);
-	            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-	            c.setReadTimeout(100000);
-	            c.setConnectTimeout(15000);
-	            c.setRequestMethod("GET");
-	            c.setDoOutput(true);
-                int lenghtOfFile = c.getContentLength();
-
-	            c.connect();
-	            String PATH = Environment.getExternalStorageDirectory() + "/download/";
-	            File file = new File(PATH);
-	            file.mkdirs();
-	            File outputFile = new File(file, fileName+fileExtension);
-	            fos = new FileOutputStream(outputFile);
-	            is = c.getInputStream();
-	            byte[] buffer = new byte[1024];
-	            int len1 = 0;
-	            int total = 0;
-	            while ((len1 = is.read(buffer)) != -1) {
-	            	total += len1;
-	            	publishProgress((int)((total*100)/lenghtOfFile));
-	                fos.write(buffer, 0, len1);
-	            }	 
-	        } finally{
-	        	if (is != null ){
-		            fos.close();
-		            is.close();
-	        	}
-	        }
-			return "sucess";			
-		}
-
-		//Muestro el progreso en la barrita
-		@Override
-		protected void onProgressUpdate(Integer... progress){
-			super.onProgressUpdate(progress);
-			mBuilder.setProgress(100, progress[0], false);
-		}
-		
-		/*
-		 * Cuando termina la descarga, borro la notificacion anterior y creo otra
-		 * tal que al clickearla, me abra directamente el archivo.
-		 */
-		@Override
-		protected void onPostExecute(String result){
-			super.onPostExecute(result);
-			mBuilder.setProgress(0, 0, false);
-			mNotificationManager.cancel(NOTIF_ALERTA_ID);
-			
-			//mBuilder = new NotificationCompat.Builder(getApplication()); 
-
-			if (result.equalsIgnoreCase("sucess")){
-			    File file = new File(Environment.getExternalStorageDirectory() + "/download/"+fileName+".pdf");
-			    MimeTypeMap map = MimeTypeMap.getSingleton();
-			    String ext = MimeTypeMap.getFileExtensionFromUrl(file.getName());
-			    String type = map.getMimeTypeFromExtension(ext);
-	
-			    if (type == null)
-			        type = "*/*";
-			    Intent intent = new Intent(Intent.ACTION_VIEW);
-			    Uri data = Uri.fromFile(file);
-	
-			    intent.setDataAndType(data, type);
-			    
-			    PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);    
-			    
-				mBuilder.setTicker(getResources().getString(R.string.msg_download_complete))
-				.setContentTitle(getResources().getString(R.string.msg_download_complete))
-				.setContentText(getResources().getString(R.string.msg_download_open))
-				.setSmallIcon(android.R.drawable.stat_sys_download_done)
-				.setLargeIcon((((BitmapDrawable)getResources()
-						.getDrawable(R.drawable.ic_launcher)).getBitmap()))
-				.setAutoCancel(true)			
-				.setContentIntent(pendingIntent);
-				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
-			} else {
-				File file = new File(Environment.getExternalStorageDirectory() + "/download/"+fileName+".pdf");
-				file.delete();
-				mBuilder.setTicker(getResources().getString(R.string.msg_download_error))
-				.setContentTitle(getResources().getString(R.string.msg_download_error))
-				.setContentText(getResources().getString(R.string.msg_download_error_long))
-				.setSmallIcon(android.R.drawable.stat_sys_warning)
-				.setLargeIcon((((BitmapDrawable)getResources()
-						.getDrawable(R.drawable.ic_launcher)).getBitmap()))						
-				.setAutoCancel(true);	
-				
-				
-				mNotificationManager.notify(NOTIF_ALERTA_ID, mBuilder.build());
-				
-			}
-		}
 	}
 }

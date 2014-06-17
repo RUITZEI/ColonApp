@@ -19,7 +19,7 @@ public class ItemAgenda {
 		setDisponibilidad(disponibilidad);
 	}
 	
-	private void setDisponibilidad(char disponibilidad) {
+	public void setDisponibilidad(char disponibilidad) {
 		this.disponibilidad = disponibilidad;		
 	}
 
