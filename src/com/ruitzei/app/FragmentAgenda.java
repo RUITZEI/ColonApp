@@ -47,7 +47,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 	private String[] itemsSpinner;
 	
 	private static final String RSS_COLON = "https://www.tuentrada.com/colon/Online/eventsXML.asp";
-	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";	
+	private static final String COMPRA_COLON = "https://www.tuentrada.com/colon/Online/mobile/seatSelect.asp?BOset::WSmap::seatmap::performance_ids=";	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -133,7 +133,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         @Override
         protected void onPostExecute(String result) {
         	if (result.equalsIgnoreCase("success")){
-        		Toast.makeText(getActivity(), "Descarga correcta", Toast.LENGTH_LONG).show();
+        		//Toast.makeText(getActivity(), "Descarga correcta", Toast.LENGTH_LONG).show();
             	mostrarLista();
             	cargarSpinner();
         	} else {        		

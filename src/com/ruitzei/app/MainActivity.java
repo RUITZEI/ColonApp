@@ -1,5 +1,6 @@
 package com.ruitzei.app;
 
+import java.io.File;
 import java.util.List;
 
 import android.app.AlertDialog;

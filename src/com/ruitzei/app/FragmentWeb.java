@@ -1,8 +1,11 @@
 package com.ruitzei.app;
 
+import java.io.File;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -114,7 +117,9 @@ public class FragmentWeb extends Fragment{
 	
 	@Override 
 	public void onDestroy(){
+		Log.e("Compra de Entradas", "Se Limpio el Cache");
+		web.clearCache(false);
 		super.onDestroy();
-		web.clearCache(true);
+		
 	}
 }
