@@ -20,6 +20,7 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBar.OnNavigationListener;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -148,10 +149,10 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         ParserColon oleParser = new ParserColon();
         try {
             stream = downloadUrl(urlString);
-            System.out.println("antes del parse");            
+            Log.d("Parse","Antes del Parse.");          
             //Le paso al PARSER el archivo XML para que haga lo suyo.
             actividadPrincipal.setNoticias(oleParser.parse(stream));
-            System.out.println("despues del parse");            
+            Log.d("Parse","Despues del parse");            
         } finally {
             if (stream != null) {
                 stream.close();                
@@ -171,7 +172,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
         // Comienza la descarga.
         conn.connect();
         InputStream stream = conn.getInputStream();
-        System.out.println("se bajo el asunto");
+        Log.d("Parse","Se completo la descarga.");
         return stream;
     }
 	
@@ -200,7 +201,7 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 					fragment.setArguments(args);
 					MenuItemCompat.collapseActionView(searchItem);
 					
-					System.out.println("Se clickeo el elemento Nº "+ position );
+					Log.d("Agenda","Se clickeo el elemento Nº "+ position );
 					FragmentManager fragmentManager = actividadPrincipal.getSupportFragmentManager();
 					fragmentManager.beginTransaction()
 					.replace(R.id.container, fragment)

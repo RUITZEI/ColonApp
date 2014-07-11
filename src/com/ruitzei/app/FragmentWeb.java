@@ -1,7 +1,5 @@
 package com.ruitzei.app;
 
-import java.io.File;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -12,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
@@ -65,7 +65,7 @@ public class FragmentWeb extends Fragment{
 		
 		web.loadUrl(this.getArguments().getString("link"));
 		//web.loadUrl("http://google.com");
-		System.out.println(this.getArguments().getString("link"));
+		Log.d("WebView", "Abriendo Link:" + this.getArguments().getString("link"));
 		
 		
 		//importante para mostrar las coasas que quiero.
@@ -117,8 +117,11 @@ public class FragmentWeb extends Fragment{
 	
 	@Override 
 	public void onDestroy(){
-		Log.e("Compra de Entradas", "Se Limpio el Cache");
-		web.clearCache(false);
+		Log.d("Web", "Se Limpio el Cache");
+		web.clearCache(true);
+		CookieSyncManager.createInstance(getActivity());         
+		CookieManager cookieManager = CookieManager.getInstance();        
+		cookieManager.removeAllCookie();
 		super.onDestroy();
 		
 	}
