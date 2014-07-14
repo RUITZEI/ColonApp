@@ -13,6 +13,7 @@
     <string name="msg_nointernet_agenda">Debes tener internet para ver la Agenda. Presiona Actualizar para volver a intentar.</string>
     <string name="msg_loading">Cargando...</string>
     <string name="msg_no_seats_available">Este evento no posee asientos disponibles.</string>
+    <string name="msg_no_seats_on_sale">Las entradas para este evento salen a la venta el </string>
     <string name="msg_nointernet_programa">No está conectado a internet.</string>
     <string name="msg_download_started">Descarga iniciada</string>
     <string name="msg_download_starting">Iniciando descarga</string>

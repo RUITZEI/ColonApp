@@ -19,6 +19,7 @@ public class ParserColon {
 	private static final String ATT_LINK = "performance_id";
 	private static final String ATT_LOGOID = "performance_logo1";
 	private static final String ATT_DISPONIBILIDAD = "availability_status";
+	private static final String ATT_ONSALE = "on_sale_date";
 	
 	public List<ItemAgenda> parse(InputStream in) throws XmlPullParserException, IOException{
 		try {
@@ -59,6 +60,7 @@ public class ParserColon {
 		String fecha = null;
 		String link = null;
 		String logoId = null;
+		String fechaDeVenta = null;
 		char disponibilidad = ' ';		
 		
 		while (parser.next() != XmlPullParser.END_TAG){
@@ -79,15 +81,24 @@ public class ParserColon {
 				logoId = leerLogoId(parser);			
 			}else if (name.equals(ATT_DISPONIBILIDAD)){
 				disponibilidad = leerDisponibilidad(parser);
+			}else if (name.equals(ATT_ONSALE)){
+				fechaDeVenta = leerFechaDeVenta(parser);
 			}else{			
 				skip(parser);
 			}			
 		}	
 
-		return new ItemAgenda(nombre, tipo, fecha, link, logoId, disponibilidad);
+		return new ItemAgenda(nombre, tipo, fecha, link, logoId, fechaDeVenta, disponibilidad);
 	}
 	
 	
+	private String leerFechaDeVenta(XmlPullParser parser) throws IOException, XmlPullParserException {
+		parser.require(XmlPullParser.START_TAG, ns, ATT_ONSALE);
+		String fechaDeVenta = readText(parser);
+		parser.require(XmlPullParser.END_TAG, ns, ATT_ONSALE);
+		return fechaDeVenta;
+	}
+
 	private String leerNombre(XmlPullParser parser) throws IOException, XmlPullParserException {
 		parser.require(XmlPullParser.START_TAG, ns, ATT_NOMBRE);
 		String nombre = readText(parser);

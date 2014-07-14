@@ -193,8 +193,11 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				
-				boolean tieneAsientosDisponibles = adapterNoticias.getItem(position).getDisponibilidad() != 'S'; 
-				if (tieneAsientosDisponibles){
+				boolean tieneAsientosDisponibles = adapterNoticias.getItem(position).getDisponibilidad() != 'S';
+				//No se puede comprar si los tickets toadvia no salieron a la venta
+				boolean puedenComprar = (adapterNoticias.getItem(position).getFechaDeVenta().length() == 0);
+				
+				if (tieneAsientosDisponibles && puedenComprar){
 					Bundle args = new Bundle();
 					args.putString("link", COMPRA_COLON+adapterNoticias.getItem(position).getLink());
 					Fragment fragment = new FragmentWeb();
@@ -207,8 +210,11 @@ public class FragmentAgenda extends ListFragment implements OnNavigationListener
 					.replace(R.id.container, fragment)
 					.addToBackStack("FragBack")
 					.commit();
-				}else{
-					Toast.makeText(getActivity(),R.string.msg_no_seats_available, Toast.LENGTH_LONG).show();					
+				}else if (!tieneAsientosDisponibles){
+					Toast.makeText(getActivity(), R.string.msg_no_seats_available, Toast.LENGTH_LONG).show();					
+				}else if (!puedenComprar){
+					String msgNoSeatsYet = getString(R.string.msg_no_seats_on_sale);
+					Toast.makeText(getActivity(), msgNoSeatsYet + " " + adapterNoticias.getItem(position).getFechaDeVentaConvertida(), Toast.LENGTH_LONG).show();
 				}
 			}
 		});	
