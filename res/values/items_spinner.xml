@@ -2,7 +2,6 @@
 <resources>
     <string-array name = "items_spinner"> 
     	<item>VER TODOS</item>
-    	<item>VISITAS GUIADAS</item>
     	<item>OPERA</item>
     	<item>BALLET</item>
     	<item>FILARMONICA</item>
