@@ -1,11 +1,6 @@
 package com.ruitzei.app;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -28,6 +23,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
+import com.parse.PushService;
 import com.ruitzei.utilitarios.DescargarPdf;
 import com.ruitzei.utilitarios.ItemAgenda;
 import com.ruitzei.z_zteatro.R;
@@ -52,6 +52,14 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		}
 		
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
+		
+		Parse.initialize(this, "VMAZUcL4dQslhLyBBuQui4Shhv7igRdbUXqR0Z3w", "sgu55tEFLOXmu3nEdndTDNPHRUwDWcfaHRA1Co7N");
+		PushService.setDefaultPushCallback(this, MainActivity.class);
+		
+		//ParseObject parseTestObject = new ParseObject("parseTestObject");
+		//parseTestObject.put("Foo", "bar");
+		//parseTestObject.saveInBackground();
+
 				
 		adapterSpinner = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);
 		
