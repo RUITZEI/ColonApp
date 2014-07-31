@@ -1,4 +1,4 @@
-package com.ruitzei.app;
+package com.ruitzei.colonApp;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import com.parse.ParseObject;
 import com.parse.PushService;
 import com.ruitzei.utilitarios.DescargarPdf;
 import com.ruitzei.utilitarios.ItemAgenda;
-import com.ruitzei.app.R;
+import com.ruitzei.colonApp.R;
 
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{

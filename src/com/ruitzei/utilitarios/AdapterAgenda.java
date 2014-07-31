@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.ruitzei.app.R;
+import com.ruitzei.colonApp.R;
 
 public class AdapterAgenda extends ArrayAdapter<Object> implements Filterable{
 	Context contexto;

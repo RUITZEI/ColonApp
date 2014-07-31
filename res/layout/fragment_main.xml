@@ -7,7 +7,7 @@
     android:paddingTop="2dp"
     android:paddingLeft="2dp"
     android:paddingRight="2dp"
-    tools:context="com.ruitzei.app.MainActivity$PlaceholderFragment" >
+    tools:context="com.ruitzei.colonApp.MainActivity$PlaceholderFragment" >
     
     <LinearLayout 
         android:orientation="vertical"

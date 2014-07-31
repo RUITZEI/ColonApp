@@ -1,4 +1,4 @@
-package com.ruitzei.app;
+package com.ruitzei.colonApp;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +17,7 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.ruitzei.utilitarios.ClienteWeb;
-import com.ruitzei.app.R;
+import com.ruitzei.colonApp.R;
 
 
 /**

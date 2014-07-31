@@ -1,4 +1,4 @@
-package com.ruitzei.app;
+package com.ruitzei.colonApp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdapterAgenda;
 import com.ruitzei.utilitarios.ParserColon;
-import com.ruitzei.app.R;
+import com.ruitzei.colonApp.R;
 
 public class FragmentAgenda extends ListFragment implements OnNavigationListener {		
 	private AdapterAgenda adapterNoticias;

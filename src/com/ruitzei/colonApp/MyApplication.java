@@ -1,4 +1,4 @@
-package com.ruitzei.app;
+package com.ruitzei.colonApp;
 
 import com.parse.Parse;
 import com.parse.PushService;
