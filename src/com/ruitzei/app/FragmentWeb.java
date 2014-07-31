@@ -17,7 +17,7 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.ruitzei.utilitarios.ClienteWeb;
-import com.ruitzei.z_zteatro.R;
+import com.ruitzei.app.R;
 
 
 /**

@@ -19,7 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.ruitzei.z_zteatro.R;
+import com.ruitzei.app.R;
 
 
 /**

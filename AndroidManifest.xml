@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.ruitzei.z_zteatro"
+<manifest package="com.ruitzei.app"
     android:versionCode="1"
     android:versionName="1.0" xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -26,8 +26,8 @@
 	  to match your app's package name + ".permission.C2D_MESSAGE".
 	-->
 	<permission android:protectionLevel="signature"
-		android:name="com.ruitzei.z_zteatro.permission.C2D_MESSAGE" />
-	<uses-permission android:name="com.ruitzei.z_zteatro.permission.C2D_MESSAGE" />
+		android:name="com.ruitzei.app.permission.C2D_MESSAGE" />
+	<uses-permission android:name="com.ruitzei.app.permission.C2D_MESSAGE" />
 
     <application
         android:name="com.ruitzei.app.MyApplication"
@@ -63,7 +63,7 @@
 		    <!--
 		      IMPORTANT: Change "com.parse.starter" to match your app's package name.
 		    -->
-		    <category android:name="com.ruitzei.z_zteatro" />
+		    <category android:name="com.ruitzei.app" />
 		  </intent-filter>
 		</receiver>
         

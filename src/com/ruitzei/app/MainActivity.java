@@ -30,7 +30,7 @@ import com.parse.ParseObject;
 import com.parse.PushService;
 import com.ruitzei.utilitarios.DescargarPdf;
 import com.ruitzei.utilitarios.ItemAgenda;
-import com.ruitzei.z_zteatro.R;
+import com.ruitzei.app.R;
 
 
 public class MainActivity extends ActionBarActivity implements OnBackStackChangedListener{
@@ -53,12 +53,6 @@ public class MainActivity extends ActionBarActivity implements OnBackStackChange
 		
 		getSupportActionBar().setDisplayShowTitleEnabled(true);
 		
-		Parse.initialize(this, "VMAZUcL4dQslhLyBBuQui4Shhv7igRdbUXqR0Z3w", "sgu55tEFLOXmu3nEdndTDNPHRUwDWcfaHRA1Co7N");
-		PushService.setDefaultPushCallback(this, MainActivity.class);
-		
-		//ParseObject parseTestObject = new ParseObject("parseTestObject");
-		//parseTestObject.put("Foo", "bar");
-		//parseTestObject.saveInBackground();
 
 				
 		adapterSpinner = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(), R.array.items_spinner, R.layout.item_spinner);

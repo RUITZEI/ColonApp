@@ -36,7 +36,7 @@ import android.widget.Toast;
 
 import com.ruitzei.utilitarios.AdapterAgenda;
 import com.ruitzei.utilitarios.ParserColon;
-import com.ruitzei.z_zteatro.R;
+import com.ruitzei.app.R;
 
 public class FragmentAgenda extends ListFragment implements OnNavigationListener {		
 	private AdapterAgenda adapterNoticias;
