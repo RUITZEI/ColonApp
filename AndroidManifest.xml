@@ -38,8 +38,11 @@
         <activity
             android:name="com.ruitzei.colonApp.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="nosensor" 
             >
+            <!-- (Que no se pueda girar)
+	  		android:screenOrientation="nosensor"
+			-->
+            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
