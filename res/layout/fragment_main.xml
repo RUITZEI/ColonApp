@@ -27,43 +27,19 @@
         android:layout_height="0dp"
         android:layout_weight="1" >   
 	    <Button
-	        android:textSize="16sp"
+	        style="@style/BotonesMain"
 	        android:id="@+id/btn_agenda"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#ffffff"
-	        android:text="@string/btn_agenda"
-			android:gravity="left|center_vertical"
-	        android:paddingLeft="40dp"
-	        android:paddingRight="20dp"
-	        android:background="@drawable/custom_button_selector"
-	        android:drawableRight="@drawable/flecha_de">
+	        android:text="@string/btn_agenda">
 	  	</Button>
 		<Button
-		    android:textSize="16sp"
+			style="@style/BotonesMain"
 		    android:id="@+id/btn_programa"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#ffffff"
-	        android:text="@string/btn_programa"
-	        android:gravity="left|center_vertical"
-	        android:paddingLeft="40dp"
-	        android:paddingRight="20dp"
-	        android:drawableRight="@drawable/flecha_de"
-	        android:background="@drawable/custom_button_selector">
+	        android:text="@string/btn_programa">
 	    </Button>
-	<Button
-		    android:textSize="16sp"
+		<Button
+			style="@style/BotonesMain"
 		    android:id="@+id/btn_temporada"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content"
-	        android:textColor="#ffffff"
-	        android:text="@string/btn_temporada"
-	        android:gravity="left|center_vertical"
-	        android:paddingLeft="40dp"
-	        android:paddingRight="20dp"
-	        android:drawableRight="@drawable/flecha_de"
-	        android:background="@drawable/custom_button_selector">
+	        android:text="@string/btn_temporada">
 	    </Button>
     </LinearLayout>
 </LinearLayout>
